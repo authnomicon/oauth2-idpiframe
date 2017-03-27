@@ -1,5 +1,5 @@
 exports = module.exports = {
-  'response/permission': require('./response/permission'),
+  'implicit/grant': require('./implicit/grant'),
 };
 
 exports.load = function(id) {
