@@ -7,7 +7,8 @@
     "email": "jaredhanson@gmail.com",
     "url": "http://www.jaredhanson.net/"
   },
-  "repository": {    "type": "git",
+  "repository": {
+    "type": "git",
     "url": "git://github.com/authnomicon/nodex-aaa-oauth2-idpiframe.git"
   },
   "bugs": {
@@ -28,5 +29,9 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.15.2",
+    "serve-static": "^1.12.1"
   }
 }

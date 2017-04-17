@@ -2,6 +2,8 @@ exports = module.exports = {
   'implicit/grant': require('./implicit/grant'),
 };
 
+// http://lists.openid.net/pipermail/openid-specs-ab/Week-of-Mon-20140630/004789.html
+
 exports.load = function(id) {
   try {
     return require('./' + id);
