@@ -50,7 +50,9 @@ exports = module.exports = function(authenticate) {
   }
   
   function respond(req, res, next) {
-    res.json({ sessions: res.locals.sessions });
+    if (req.query.scope) { res.locals.scope = req.query.scope; }
+    
+    res.json(res.locals);
   }
   
   

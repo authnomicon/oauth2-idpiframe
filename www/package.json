@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "idpiframe": "git://github.com/jaredhanson/idpiframe.git"
+    "idpiframe": "git://github.com/jaredhanson/idpiframe.git",
+    "storagerelay": "git://github.com/jaredhanson/storagerelay-js.git"
   }
 }
