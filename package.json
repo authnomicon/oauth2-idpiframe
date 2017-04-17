@@ -22,6 +22,10 @@
     }
   ],
   "main": "./app",
+  "dependencies": {
+    "express": "^4.15.2",
+    "serve-static": "^1.12.1"
+  },
   "devDependencies": {
     "make-node": "^0.3.0",
     "mocha": "^2.0.0",
@@ -29,9 +33,5 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/*.test.js"
-  },
-  "dependencies": {
-    "express": "^4.15.2",
-    "serve-static": "^1.12.1"
   }
 }
