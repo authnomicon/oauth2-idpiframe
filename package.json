@@ -1,5 +1,5 @@
 {
-  "name": "nodex-aaa-oauth2-idpiframe",
+  "name": "@authnomicon/aaa-oauth2-iframe",
   "version": "0.0.0",
   "description": "",
   "author": {
@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/authnomicon/nodex-aaa-oauth2-idpiframe.git"
+    "url": "git://github.com/authnomicon/aaa-oauth2-iframe.git"
   },
   "bugs": {
-    "url": "http://github.com/authnomicon/nodex-aaa-oauth2-idpiframe/issues"
+    "url": "http://github.com/authnomicon/aaa-oauth2-iframe/issues"
   },
   "license": "MIT",
   "licenses": [
