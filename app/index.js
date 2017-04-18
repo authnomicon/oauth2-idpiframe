@@ -1,5 +1,5 @@
 exports = module.exports = {
-  'implicit/grant': require('./implicit/grant'),
+  'implicit/permission': require('./implicit/permission'),
   'ext/modes/iframerpc': require('./ext/modes/iframerpc')
 };
 
