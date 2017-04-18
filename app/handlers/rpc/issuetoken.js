@@ -15,7 +15,7 @@ exports = module.exports = function(server, validateClient, processTransaction, 
     return {
       iframe: true,
       prompt: [ 'none' ],
-      responseMode: '.iframerpc'
+      responseMode: '.iframe-rpc+json'
     }
   }
   

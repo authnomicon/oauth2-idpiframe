@@ -3,4 +3,4 @@ exports = module.exports = function() {
 };
 
 exports['@implements'] = 'http://schemas.authnomicon.org/js/aaa/oauth2/response/mode';
-exports['@mode'] = '.iframerpc';
+exports['@mode'] = '.iframe-rpc+json';
