@@ -25,6 +25,8 @@
   "assembly": {
     "namespace": "oauth2/idpiframe",
     "components": [
+      "http/iframe",
+      "http/rpc",
       "ext/modes/iframerpc",
       "implicit/permission"
     ]

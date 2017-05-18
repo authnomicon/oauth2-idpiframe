@@ -2,7 +2,7 @@ exports = module.exports = function(js) {
   var express = require('express');
   var path = require('path');
   
-  var iframe = path.join(__dirname, '../../www/iframe.html');
+  var iframe = path.join(__dirname, '../../../www/iframe.html');
   
   
   var router = new express.Router();
@@ -16,4 +16,5 @@ exports = module.exports = function(js) {
   return router;
 };
 
-exports['@require'] = [ './assets/js' ];
+exports['@implements'] = 'http://schemas.authnomicon.org/js/aaa/oauth2/idpiframe/http/IFrameService';
+exports['@require'] = [ './handlers/assets/js' ];

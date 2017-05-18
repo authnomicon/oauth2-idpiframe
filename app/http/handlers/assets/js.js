@@ -4,8 +4,8 @@ exports = module.exports = function() {
   
   
   var router = new express.Router();
-  router.use(require('serve-static')(path.join(__dirname, '../../../www/js')));
-  router.use('/lib', require('serve-static')(path.join(__dirname, '../../../www/node_modules')));
+  router.use(require('serve-static')(path.join(__dirname, '../../../../www/js')));
+  router.use('/lib', require('serve-static')(path.join(__dirname, '../../../../www/node_modules')));
   return router;
 };
 
