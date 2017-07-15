@@ -4,7 +4,7 @@ exports = module.exports = function(issue) {
   return oauth2orize.grant.permission({}, issue);
 };
 
-exports['@implements'] = 'http://schemas.authnomicon.org/js/aaa/oauth2/grant';
+exports['@implements'] = 'http://schemas.authnomicon.org/js/oauth2/responseType';
 exports['@type'] = 'permission';
 exports['@require'] = [
   './issue'
