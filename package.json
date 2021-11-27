@@ -1,29 +1,33 @@
 {
-  "name": "@authnomicon/aaa-oauth2-idpiframe",
+  "name": "@authnomicon/oauth2-idpiframe",
   "version": "0.0.0",
-  "description": "",
+  "description": "OAuth 2.0 IDP IFrame components for the Authnomicon project.",
   "author": {
     "name": "Jared Hanson",
     "email": "jaredhanson@gmail.com",
-    "url": "http://www.jaredhanson.net/"
+    "url": "https://www.jaredhanson.me/"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/authnomicon/aaa-oauth2-idpiframe.git"
+    "url": "git://github.com/authnomicon/oauth2-idpiframe.git"
   },
   "bugs": {
-    "url": "http://github.com/authnomicon/aaa-oauth2-idpiframe/issues"
+    "url": "https://github.com/authnomicon/oauth2-idpiframe/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/jaredhanson"
   },
   "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://opensource.org/licenses/MIT"
+      "url": "https://opensource.org/licenses/MIT"
     }
   ],
   "main": "./app",
   "assembly": {
-    "namespace": "oauth2/idpiframe",
+    "namespace": "org.authnomicon/oauth2/idpiframe",
     "components": [
       "http/iframe",
       "http/rpc",
