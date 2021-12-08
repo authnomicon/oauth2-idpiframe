@@ -47,9 +47,12 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-express-handler": "^0.1.1",
     "make-node": "^0.3.0",
     "mocha": "^2.0.0",
-    "chai": "^3.0.0"
+    "sinon": "^12.0.1",
+    "sinon-chai": "^3.7.0"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/*.test.js"
