@@ -22,7 +22,7 @@ describe('rpc/http/handlers/rpc', function() {
     
     var handler = factory(actions);
     
-    chai.express.use([ handler ])
+    chai.express.use(handler)
       .request(function(req, res) {
         req.query = {
           action: 'checkOrigin'
