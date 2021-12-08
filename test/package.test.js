@@ -12,7 +12,8 @@ describe('@authnomicon/oauth2-idpiframe', function() {
       expect(json.assembly.namespace).to.equal('org.authnomicon/oauth2/idpiframe');
       
       expect(json.assembly.components).to.deep.equal([
-        'iframe/http/service'
+        'iframe/http/service',
+        'rpc/http/service'
       ]);
     });
   });
