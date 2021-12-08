@@ -1,19 +1,18 @@
-exports = module.exports = function(authenticate) {
+exports = module.exports = function(router) {
   
-  
-  function go(req, res, next) {
-    console.log('GOT RPC REQUEST')
-    console.log(req.query);
-    console.log(req.user);
+  function dispatch(req, res, next) {
+    var action = req.query.action;
+    // TODO: If no action, error
+    
+    router.dispatch(action, req, res, next)
   }
   
   
   return [
-    authenticate([ 'session', 'anonymous' ], { multi: true }),
-    go
+    dispatch
   ];
 };
 
 exports['@require'] = [
-  'http://i.bixbyjs.org/http/middleware/authenticate'
+  '../actions/index'
 ];
