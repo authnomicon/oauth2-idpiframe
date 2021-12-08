@@ -32,22 +32,37 @@ describe('rpc/http/actions/listsessions', function() {
   
   describe('handler', function() {
     
-    it('should do something', function(done) {
+    it('should list single session', function(done) {
       var handler = factory(authenticate);
     
       chai.express.use(handler)
         .request(function(req, res) {
           req.query = {
-            action: 'checkOrigin'
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            ss_domain: 'https://client.example.org',
+            scope: 'openid profile email',
+            origin: 'https://client.example.org'
           };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
         })
         .finish(function() {
           expect(this).to.have.status(200);
-          expect(this).to.have.body({ beep: 'boop' });
+          expect(this).to.have.body({
+            sessions: [
+              { login_hint: 'TODO', session_state: { extraQueryParams: { ss: '0' } } }
+            ]
+          });
           done();
         })
         .listen();
-    }); // should dispatch action
+    }); // should list single session
     
   }); // handler
   
