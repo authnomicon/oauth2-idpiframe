@@ -7,6 +7,9 @@ exports = module.exports = function(authenticate) {
     console.log(req.user);
     console.log(req.authInfo);
     
+    // TODO: 404 with empty sessions if not authenticated?
+    
+    
     var users = req.user;
     if (!Array.isArray(users)) {
       users = [ users ];
@@ -19,8 +22,10 @@ exports = module.exports = function(authenticate) {
     var sessions = []
       , session, i;
     for (i = 0; i < users.length; ++i) {
+      // TODO: Filter this list to only accounts the client has been granted access to
+      
       session = { login_hint: 'TODO' }
-      if (req.authInfo.sessionSelector) {
+      if (infos[i].sessionSelector) {
         session.session_state = {
           extraQueryParams: {
             ss: req.authInfo.sessionSelector
