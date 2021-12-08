@@ -13,27 +13,31 @@ describe('rpc/http/handlers/rpc', function() {
     expect(factory['@singleton']).to.be.undefined;
   });
   
-  it('should dispatch action', function(done) {
-    var actions = new Object();
-    actions.dispatch = sinon.spy(function(action, req, res, next) {
-      expect(action).to.equal('checkOrigin');
-      res.json({ valid: true });
-    });
+  describe('handler', function() {
     
-    var handler = factory(actions);
+    it('should dispatch action', function(done) {
+      var actions = new Object();
+      actions.dispatch = sinon.spy(function(action, req, res, next) {
+        expect(action).to.equal('checkOrigin');
+        res.json({ valid: true });
+      });
     
-    chai.express.use(handler)
-      .request(function(req, res) {
-        req.query = {
-          action: 'checkOrigin'
-        };
-      })
-      .finish(function() {
-        expect(this).to.have.status(200);
-        expect(this).to.have.body({ valid: true });
-        done();
-      })
-      .listen();
-  }); // should dispatch action
+      var handler = factory(actions);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin'
+          };
+        })
+        .finish(function() {
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({ valid: true });
+          done();
+        })
+        .listen();
+    }); // should dispatch action
+    
+  }); // handler
   
 });

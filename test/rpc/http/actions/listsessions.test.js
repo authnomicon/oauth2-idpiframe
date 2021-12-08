@@ -30,21 +30,25 @@ describe('rpc/http/actions/listsessions', function() {
     expect(authenticateSpy).to.be.calledWithExactly([ 'session', 'anonymous' ], { multi: true });
   });
   
-  it('should do something', function(done) {
-    var handler = factory(authenticate);
+  describe('handler', function() {
     
-    chai.express.use(handler)
-      .request(function(req, res) {
-        req.query = {
-          action: 'checkOrigin'
-        };
-      })
-      .finish(function() {
-        expect(this).to.have.status(200);
-        expect(this).to.have.body({ beep: 'boop' });
-        done();
-      })
-      .listen();
-  }); // should dispatch action
+    it('should do something', function(done) {
+      var handler = factory(authenticate);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin'
+          };
+        })
+        .finish(function() {
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({ beep: 'boop' });
+          done();
+        })
+        .listen();
+    }); // should dispatch action
+    
+  }); // handler
   
 });
