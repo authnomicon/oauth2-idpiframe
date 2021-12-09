@@ -29,6 +29,7 @@
   "assembly": {
     "namespace": "org.authnomicon/oauth2/idpiframe",
     "components": [
+      "oauth2/authorize/http/response/modes/iframerpc",
       "iframe/http/service",
       "rpc/http/service"
     ],
