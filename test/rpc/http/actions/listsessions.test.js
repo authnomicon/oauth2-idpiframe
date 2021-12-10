@@ -32,6 +32,40 @@ describe('rpc/http/actions/listsessions', function() {
   
   describe('handler', function() {
     
+    it('should list no sessions', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(loginHint, clients, authenticate);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+        })
+        .finish(function() {
+          expect(loginHint.generate.callCount).to.equal(0);
+          
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({
+            sessions: []
+          });
+          done();
+        })
+        .listen();
+    }); // should list no sessions
+    
     it('should list single session', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
