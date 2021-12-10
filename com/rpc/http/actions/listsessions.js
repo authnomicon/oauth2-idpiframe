@@ -4,6 +4,10 @@ exports = module.exports = function(loginHint, clients, authenticate) {
     var clientID = req.query.client_id;
     var origin = req.query.origin;
     
+    if (!clientID) {
+      return res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameter: client_id' });
+    }
+    
     clients.read(clientID, function(err, client) {
       if (err) { return next(err); }
       if (!client) {
