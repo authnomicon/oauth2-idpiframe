@@ -11,7 +11,7 @@ describe('rpc/http/actions/index', function() {
     expect(factory['@singleton']).to.be.undefined;
   });
   
-  it('should construct', function() {
+  it('should construct router', function() {
     function checkOrigin() {};
     function issueToken() {};
     function listSessions() {};
