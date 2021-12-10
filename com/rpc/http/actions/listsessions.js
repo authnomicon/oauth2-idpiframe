@@ -56,6 +56,9 @@ exports = module.exports = function(loginHint, clients, authenticate) {
         });
       }
       
+      // NOTE: In Google's implementation, it appears that login_hint is being
+      // generated based on ss_domain parameter.  Investigate this.
+      
       // TODO: load client details here
       loginHint.generate(user.id, res.locals.client, function(err, hint) {
         if (err) { return iter(err); }
