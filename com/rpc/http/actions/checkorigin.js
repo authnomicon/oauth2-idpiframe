@@ -9,6 +9,10 @@ exports = module.exports = function(clients) {
     }
     
     clients.read(clientID, function(err, client) {
+      if (err) { return next(err); }
+      if (!client) {
+        return res.status(403).json({ error: 'invalid_request' });
+      }
       if (client.webOrigins.indexOf(origin) == -1) {
         return res.status(403).json({ error: 'invalid_request' });
       }

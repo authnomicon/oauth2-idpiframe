@@ -68,6 +68,28 @@ describe('rpc/http/actions/checkorigin', function() {
         .listen();
     }); // should respond with invalid origin
     
+    it('should respond with unknown client', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null);
+      
+      var handler = factory(clients);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net'
+          };
+        })
+        .finish(function() {
+          expect(this).to.have.status(403);
+          expect(this).to.have.body({ error: 'invalid_request' });
+          done();
+        })
+        .listen();
+    }); // should respond with unknown client
+    
     it('should respond when missing client id parameter', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
