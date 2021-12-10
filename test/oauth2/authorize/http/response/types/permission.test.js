@@ -78,7 +78,8 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     it('should issue login hint', function(done) {
       var client = {
         id: 's6BhdRkqt3',
-        name: 'My Example Client'
+        name: 'My Example Client',
+        redirectURIs: [ 'https://client.example.com/cb' ]
       };
       var user = {
         id: '248289761001',
@@ -101,7 +102,8 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
         expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
           id: 's6BhdRkqt3',
-          name: 'My Example Client'
+          name: 'My Example Client',
+          redirectURIs: [ 'https://client.example.com/cb' ]
         });
         expect(hint).to.equal('AJMrCA...');
         done();

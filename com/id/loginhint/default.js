@@ -2,7 +2,9 @@ exports = module.exports = function() {
   
   return {
     generate: function(id, client, cb) {
-      return cb(null, 'A-LOGIN-HINT');
+      // TODO: make pairwise identifiers (based on OpenID sector?  or origin?)
+      
+      return cb(null, id);
     }
   };
 };

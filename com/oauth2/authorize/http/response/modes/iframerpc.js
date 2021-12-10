@@ -1,7 +1,5 @@
-exports = module.exports = function() {
+exports = module.exports = function(loginHint) {
   return require('oauth2orize-iframerpcrm')(function(txn, cb) {
-    console.log('EXTEND IT');
-    
     var params = {};
     
     // TODO: generate login hint
@@ -19,3 +17,6 @@ exports = module.exports = function() {
 
 exports['@implements'] = 'http://i.authnomicon.org/oauth2/authorization/http/ResponseMode';
 exports['@mode'] = '.iframerpc';
+exports['@require'] = [
+  '../../../../../id/loginhint'
+];
