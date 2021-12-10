@@ -24,7 +24,7 @@ describe('rpc/http/actions/listsessions', function() {
   it('should create handler', function() {
     var authenticateSpy = sinon.spy(authenticate);
     
-    var handler = factory(authenticateSpy);
+    var handler = factory(null, authenticateSpy);
     
     expect(authenticateSpy).to.be.calledOnce;
     expect(authenticateSpy).to.be.calledWithExactly([ 'session', 'anonymous' ], { multi: true });
@@ -33,7 +33,7 @@ describe('rpc/http/actions/listsessions', function() {
   describe('handler', function() {
     
     it('should list single session', function(done) {
-      var handler = factory(authenticate);
+      var handler = factory(null, authenticate);
     
       chai.express.use(handler)
         .request(function(req, res) {

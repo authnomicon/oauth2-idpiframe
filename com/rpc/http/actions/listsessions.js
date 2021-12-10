@@ -1,4 +1,4 @@
-exports = module.exports = function(authenticate) {
+exports = module.exports = function(loginHint, authenticate) {
   
   
   function list(req, res, next) {
@@ -19,26 +19,33 @@ exports = module.exports = function(authenticate) {
       infos = [ infos ];
     }
     
+    
     var sessions = []
-      , session, i;
-    for (i = 0; i < users.length; ++i) {
-      // TODO: Filter this list to only accounts the client has been granted access to
+      , i = 0;
+    (function iter(err) {
+      if (err) { return next(err); }
       
-      session = { login_hint: 'TODO' }
-      if (infos[i].sessionSelector) {
+      var user = users[i++];
+      if (!user) {
+        return res.json({
+          sessions: sessions
+        });
+      }
+      
+      var session = { login_hint: 'TODO' }
+      if (infos[i - 1].sessionSelector) {
         session.session_state = {
           extraQueryParams: {
-            ss: req.authInfo.sessionSelector
+            ss: infos[i - 1].sessionSelector
           }
         };
       }
       
+      // TODO: Filter this list to only accounts the client has been granted access to
+      
       sessions.push(session);
-    }
-    
-    res.json({
-      sessions: sessions
-    });
+      iter();
+    })();
   }
   
   
@@ -50,5 +57,6 @@ exports = module.exports = function(authenticate) {
 
 exports['@action'] = 'listSessions';
 exports['@require'] = [
+  '../../../id/loginhint',
   'http://i.bixbyjs.org/http/middleware/authenticate'
 ];
