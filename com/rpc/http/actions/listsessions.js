@@ -7,6 +7,9 @@ exports = module.exports = function(loginHint, clients, authenticate) {
     if (!clientID) {
       return res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameter: client_id' });
     }
+    if (!origin) {
+      return res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameter: origin' });
+    }
     
     clients.read(clientID, function(err, client) {
       if (err) { return next(err); }

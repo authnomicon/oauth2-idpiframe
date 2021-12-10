@@ -198,6 +198,43 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should respond when missing client id parameter
     
+    it('should respond when missing origin parameter', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null);
+      
+      var handler = factory(loginHint, clients, authenticate);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .finish(function() {
+          expect(loginHint.generate.callCount).to.equal(0);
+          
+          expect(this).to.have.status(400);
+          expect(this).to.have.body({
+            error: 'invalid_request',
+            error_description: 'Missing required parameter: origin'
+          });
+          done();
+        })
+        .listen();
+    }); // should respond when missing origin parameter
+    
   }); // handler
   
 });
