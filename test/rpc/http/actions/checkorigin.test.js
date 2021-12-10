@@ -42,7 +42,7 @@ describe('rpc/http/actions/checkorigin', function() {
         .listen();
     }); // should respond with valid origin
     
-    it('should respond with invalid origin', function(done) {
+    it('should respond to client using invalid origin', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -66,9 +66,9 @@ describe('rpc/http/actions/checkorigin', function() {
           done();
         })
         .listen();
-    }); // should respond with invalid origin
+    }); // should respond to client using invalid origin
     
-    it('should respond with unknown client', function(done) {
+    it('should respond to unknown client', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
@@ -88,7 +88,7 @@ describe('rpc/http/actions/checkorigin', function() {
           done();
         })
         .listen();
-    }); // should respond with unknown client
+    }); // should respond to unknown client
     
     it('should respond when missing client id parameter', function(done) {
       var clients = new Object();

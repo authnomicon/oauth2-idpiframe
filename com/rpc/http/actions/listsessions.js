@@ -6,6 +6,13 @@ exports = module.exports = function(loginHint, clients, authenticate) {
     
     clients.read(clientID, function(err, client) {
       if (err) { return next(err); }
+      if (!client) {
+        return res.status(401).json({ error: 'invalid_client', error_description: 'The OAuth client was not found.' });
+      }
+      if (client.webOrigins.indexOf(origin) == -1) {
+        return res.status(403).json({ error: 'access_denied', error_description: 'Invalid client for this origin.' });
+      }
+      
       res.locals.client = client;
       next();
     });
