@@ -32,19 +32,24 @@ exports = module.exports = function(loginHint, authenticate) {
         });
       }
       
-      var session = { login_hint: 'TODO' }
-      if (infos[i - 1].sessionSelector) {
-        session.session_state = {
-          extraQueryParams: {
-            ss: infos[i - 1].sessionSelector
-          }
-        };
-      }
+      // TODO: load client details here
+      loginHint.generate(user.id, {}, function(err, hint) {
+        if (err) { return iter(err); }
       
-      // TODO: Filter this list to only accounts the client has been granted access to
+        var session = { login_hint: hint }
+        if (infos[i - 1].sessionSelector) {
+          session.session_state = {
+            extraQueryParams: {
+              ss: infos[i - 1].sessionSelector
+            }
+          };
+        }
       
-      sessions.push(session);
-      iter();
+        // TODO: Filter this list to only accounts the client has been granted access to
+      
+        sessions.push(session);
+        iter();
+      });
     })();
   }
   
