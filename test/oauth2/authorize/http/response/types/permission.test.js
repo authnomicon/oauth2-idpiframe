@@ -39,7 +39,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       }
     });
     
-    factory(logger, container)
+    factory(null, logger, container)
       .then(function(type) {
         expect(permissionSpy).to.be.calledOnce;
         expect(permissionSpy).to.be.calledWith({ modes: {} });
@@ -53,7 +53,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     container.components = sinon.stub()
     container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseMode').returns([]);
     container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseParameters').returns([]);
-    var lhs = new Object();
+    var loginHint = new Object();
     
     var permissionSpy = sinon.stub();
     var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
@@ -65,10 +65,9 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     var issue;
     
     beforeEach(function(done) {
-      lhs.issue = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       
-      //factory(lhs, logger, container)
-      factory(logger, container)
+      factory(loginHint, logger, container)
         .then(function(type) {
           issue = permissionSpy.getCall(0).args[1];
           done();
@@ -98,20 +97,13 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       issue(client, user, ares, areq, {}, function(err, hint) {
         if (err) { return done(err); }
         
-        /*
-        expect(idts.issue.callCount).to.equal(1);
-        expect(idts.issue.getCall(0).args[0]).to.deep.equal({
-          user: {
-            id: '248289761001',
-            displayName: 'Jane Doe'
-          },
-          client: {
-            id: 's6BhdRkqt3',
-            name: 'My Example Client'
-          }
+        expect(loginHint.generate.callCount).to.equal(1);
+        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+        expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
+          id: 's6BhdRkqt3',
+          name: 'My Example Client'
         });
-        */
-        expect(hint).to.equal('A-LOGIN-HINT');
+        expect(hint).to.equal('AJMrCA...');
         done();
       });
     }); // should issue login hint

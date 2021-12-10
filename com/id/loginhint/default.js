@@ -1,7 +1,7 @@
 exports = module.exports = function() {
   
   return {
-    generate: function(msg, cb) {
+    generate: function(id, client, cb) {
       return cb(null, 'A-LOGIN-HINT');
     }
   };

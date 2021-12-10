@@ -1,4 +1,4 @@
-exports = module.exports = function(logger, C) {
+exports = module.exports = function(loginHint, logger, C) {
   var oauth2orize = require('oauth2orize-permission');
   
   
@@ -46,7 +46,10 @@ exports = module.exports = function(logger, C) {
       return oauth2orize.grant.permission({
         modes: modes
       }, function(client, user, ares, areq, locals, cb) {
-        return cb(null, 'A-LOGIN-HINT')
+        loginHint.generate(user.id, client, function(err, hint) {
+          if (err) { return cb(err); }
+          return cb(null, hint);
+        });
       });
     });
 };
@@ -54,6 +57,7 @@ exports = module.exports = function(logger, C) {
 exports['@implements'] = 'http://i.authnomicon.org/oauth2/authorization/http/ResponseType';
 exports['@type'] = 'permission';
 exports['@require'] = [
+  '../../../../../id/loginhint',
   'http://i.bixbyjs.org/Logger',
   '!container'
 ];
