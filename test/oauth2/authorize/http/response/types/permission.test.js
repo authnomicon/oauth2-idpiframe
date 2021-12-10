@@ -89,7 +89,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         allow: true
       }
       var areq = {
-        type: 'id_token',
+        type: 'permission',
         clientID: 's6BhdRkqt3',
         redirectURI: 'https://client.example.com/cb',
         state: 'xyz'

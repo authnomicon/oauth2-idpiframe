@@ -21,14 +21,20 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
   
   describe('extend', function() {
     var loginHint = new Object();
-    loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
-    
+  
     var iframerpcrmSpy = sinon.spy();
     var factory = $require('../../../../../../com/oauth2/authorize/http/response/modes/iframerpc', {
       'oauth2orize-iframerpcrm': iframerpcrmSpy
     });
-    var mode = factory(loginHint);
-    var extend = iframerpcrmSpy.getCall(0).args[0];
+    
+    var extend;
+    
+    beforeEach(function() {
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      
+      factory(loginHint);
+      extend = iframerpcrmSpy.getCall(0).args[0];
+    });
     
     it('should extend with login hint', function(done) {
       var txn = {
@@ -54,6 +60,14 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
       
       extend(txn, function(err, params) {
         if (err) { return done(err); }
+        
+        expect(loginHint.generate.callCount).to.equal(1);
+        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+        expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
+          id: 's6BhdRkqt3',
+          name: 'My Example Client',
+          redirectURIs: [ 'https://client.example.com/cb' ]
+        });
         expect(params).to.deep.equal({
           login_hint: 'AJMrCA...'
         });
@@ -89,6 +103,14 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
       
       extend(txn, function(err, params) {
         if (err) { return done(err); }
+        
+        expect(loginHint.generate.callCount).to.equal(1);
+        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+        expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
+          id: 's6BhdRkqt3',
+          name: 'My Example Client',
+          redirectURIs: [ 'https://client.example.com/cb' ]
+        });
         expect(params).to.deep.equal({
           login_hint: 'AJMrCA...',
           session_state: {
