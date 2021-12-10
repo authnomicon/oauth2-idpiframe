@@ -4,14 +4,20 @@ exports = module.exports = function(loginHint) {
     
     // TODO: generate login hint
     
-    var selector = txn.res.authContext && txn.res.authContext.sessionSelector;
-    if (selector) {
-      params.session_state = {
-        extraQueryParams: { ss: selector }
-      };
-    }
+    loginHint.generate(txn.user.id, txn.client, function(err, hint) {
+      if (err) { return cb(err); }
+      
+      params.login_hint = hint;
+      
+      var selector = txn.res.authContext && txn.res.authContext.sessionSelector;
+      if (selector) {
+        params.session_state = {
+          extraQueryParams: { ss: selector }
+        };
+      }
     
-    return cb(null, params);
+      return cb(null, params);
+    });
   });
 };
 
