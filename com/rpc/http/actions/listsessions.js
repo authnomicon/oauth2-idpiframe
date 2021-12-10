@@ -1,5 +1,15 @@
-exports = module.exports = function(loginHint, authenticate) {
+exports = module.exports = function(loginHint, clients, authenticate) {
   
+  function validateClient(req, res, next) {
+    var clientID = req.query.client_id;
+    var origin = req.query.origin;
+    
+    clients.read(clientID, function(err, client) {
+      if (err) { return next(err); }
+      res.locals.client = client;
+      next();
+    });
+  }
   
   function list(req, res, next) {
     console.log('LIST SESSIONS')
@@ -33,7 +43,7 @@ exports = module.exports = function(loginHint, authenticate) {
       }
       
       // TODO: load client details here
-      loginHint.generate(user.id, {}, function(err, hint) {
+      loginHint.generate(user.id, res.locals.client, function(err, hint) {
         if (err) { return iter(err); }
       
         var session = { login_hint: hint }
@@ -56,6 +66,7 @@ exports = module.exports = function(loginHint, authenticate) {
   
   return [
     authenticate([ 'session', 'anonymous' ], { multi: true }),
+    validateClient,
     list
   ];
 };
@@ -63,5 +74,6 @@ exports = module.exports = function(loginHint, authenticate) {
 exports['@action'] = 'listSessions';
 exports['@require'] = [
   '../../../id/loginhint',
+  'http://i.authnomicon.org/oauth2/ClientDirectory',
   'http://i.bixbyjs.org/http/middleware/authenticate'
 ];

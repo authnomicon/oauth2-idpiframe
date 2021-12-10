@@ -24,7 +24,7 @@ describe('rpc/http/actions/listsessions', function() {
   it('should create handler', function() {
     var authenticateSpy = sinon.spy(authenticate);
     
-    var handler = factory(null, authenticateSpy);
+    var handler = factory(null, null, authenticateSpy);
     
     expect(authenticateSpy).to.be.calledOnce;
     expect(authenticateSpy).to.be.calledWithExactly([ 'session', 'anonymous' ], { multi: true });
@@ -35,8 +35,14 @@ describe('rpc/http/actions/listsessions', function() {
     it('should list single session', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
       
-      var handler = factory(loginHint, authenticate);
+      var handler = factory(loginHint, clients, authenticate);
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -56,6 +62,14 @@ describe('rpc/http/actions/listsessions', function() {
           }
         })
         .finish(function() {
+          expect(loginHint.generate.callCount).to.equal(1);
+          expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+          expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
+            id: 's6BhdRkqt3',
+            name: 'My Example Client',
+            webOrigins: [ 'https://client.example.com' ]
+          });
+          
           expect(this).to.have.status(200);
           expect(this).to.have.body({
             sessions: [
