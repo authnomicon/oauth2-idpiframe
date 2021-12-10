@@ -1,12 +1,9 @@
 exports = module.exports = function(loginHint) {
   return require('oauth2orize-iframerpcrm')(function(txn, cb) {
-    var params = {};
-    
-    // TODO: generate login hint
-    
     loginHint.generate(txn.user.id, txn.client, function(err, hint) {
       if (err) { return cb(err); }
       
+      var params = {};
       params.login_hint = hint;
       
       var selector = txn.res.authContext && txn.res.authContext.sessionSelector;
