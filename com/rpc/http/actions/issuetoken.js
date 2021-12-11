@@ -26,6 +26,11 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
           console.log(err);
           console.log(client);
           
+          if (err) { return cb(err); }
+          if (!client) {
+            return cb(new oauth2orize.AuthorizationError('The OAuth client was not found.', 'invalid_client', undefined, 401));
+          }
+          
           return cb(null, client);
         });
       },

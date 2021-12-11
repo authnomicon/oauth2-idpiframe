@@ -113,6 +113,36 @@ describe('rpc/http/actions/issuetoken', function() {
         .listen();
     }); // should evaluate request
     
+    it('should reject request from unregistered client', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null);
+      
+      var handler = factory(evaluate, clients, server, authenticate, state);
+      
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'issueToken',
+            response_type: 'token id_token',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            login_hint: 'AJMrCA...',
+            ss_domain: 'https://client.example.com'
+          };
+        })
+        .next(function(err, req, res) {
+          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
+          expect(err.message).to.equal('The OAuth client was not found.');
+          expect(err.code).to.equal('invalid_client');
+          expect(err.status).to.equal(401);
+          
+          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
+          done();
+        })
+        .listen();
+    }); // should reject request from unregistered client
+    
     it('should reject request from client using unregistered origin', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
@@ -145,7 +175,7 @@ describe('rpc/http/actions/issuetoken', function() {
           done();
         })
         .listen();
-    });
+    }); // should reject request from client using unregistered origin
     
   }); // handler
   
