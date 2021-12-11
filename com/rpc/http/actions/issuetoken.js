@@ -1,23 +1,17 @@
-// WIP: action dispatching
-
 exports = module.exports = function(evaluate, clients, server, authenticate, state) {
-  
-  
-  function debug(req, res, next) {
-    console.log('ISSUE TOKEN RPC')
-    console.log(req.query);
-    console.log(req.user);
-    next();
-  }
   
   
   // TODO: Evaluate is going to need to process login hint and/or id token to select appropriate user
   //.   Maybe even reject requests without it.
   
   return [
-    authenticate([ 'session', 'anonymous' ], { multi: true }),
+    function(req, res, next) {
+      console.log('ISSUE TOKEN BODY');
+      console.log(req.query);
+      next();
+    },
     state({ external: true }),
-    debug,
+    authenticate([ 'session', 'anonymous' ], { multi: true }),
     server.authorization(
       function validateClient(clientID, redirectURI, cb) {
         console.log('IDP IFRAME VALIDATE CLIENT');
@@ -26,18 +20,20 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
         
         // TODO: Implement this properly
         
-        //clients.read(clientID, function(err, client) {
-        clients.read('1', function(err, client) {
+        clients.read(clientID, function(err, client) {
+        //clients.read('1', function(err, client) {
           console.log('READ CLIENT');
           console.log(err);
           console.log(client);
           
-          return cb(null, client, redirectURI);
+          return cb(null, client);
         });
       },
       function(txn, cb) {
         console.log('IDP IFRAME IMMEDIATE');
         console.log(txn)
+        
+        // WIP: check the origin here
         
         // check login_hint here?
         
@@ -48,6 +44,7 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
       console.log('OVERRIDE IDP IFRAME STUFF');
       req.oauth2.req.responseMode = '.iframerpc';
       req.oauth2.req.prompt = [ 'none' ];
+        
       
       next();
     },
