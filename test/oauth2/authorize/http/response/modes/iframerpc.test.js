@@ -41,20 +41,22 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
         client: {
           id: 's6BhdRkqt3',
           name: 'My Example Client',
-          redirectURIs: [ 'https://client.example.com/cb' ]
+          redirectURIs: [ 'https://client.example.com/cb' ],
+          webOrigins: [ 'https://client.example.com' ]
         },
-        redirectURI: 'https://client.example.com/cb',
         req: {
           type: 'token id_token',
           clientID: 's6BhdRkqt3',
-          redirectURI: 'https://client.example.com/cb'
+          loginHint: 'AJMrCA...',
+          scope: [ 'profile', 'email' ]
         },
         user: {
           id: '248289761001',
           displayName: 'Jane Doe'
         },
         res: {
-          allow: true
+          allow: true,
+          scope: [ 'profile', 'email' ]
         }
       };
       
@@ -66,7 +68,8 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
         expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
           id: 's6BhdRkqt3',
           name: 'My Example Client',
-          redirectURIs: [ 'https://client.example.com/cb' ]
+          redirectURIs: [ 'https://client.example.com/cb' ],
+          webOrigins: [ 'https://client.example.com' ]
         });
         expect(params).to.deep.equal({
           login_hint: 'AJMrCA...'
