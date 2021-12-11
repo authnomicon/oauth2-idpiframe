@@ -52,6 +52,10 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
     ),
     function(req, res, next) {
       var origin = req.query.origin;
+      if (!origin) {
+        return next(new oauth2orize.AuthorizationError('Missing required parameter: origin', 'invalid_request'));
+      }
+      
       
       var client = req.oauth2.client;
       
