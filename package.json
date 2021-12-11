@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "array-flatten": "^1.1.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "oauth2orize": "^1.11.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",

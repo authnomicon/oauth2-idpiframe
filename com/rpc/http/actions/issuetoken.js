@@ -1,5 +1,5 @@
 exports = module.exports = function(evaluate, clients, server, authenticate, state) {
-  
+  var oauth2orize = require('oauth2orize');
   
   // TODO: Evaluate is going to need to process login hint and/or id token to select appropriate user
   //.   Maybe even reject requests without it.
@@ -33,6 +33,11 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
         console.log('IDP IFRAME IMMEDIATE');
         console.log(txn)
         
+        
+        
+        
+        
+        
         // WIP: check the origin here
         
         // check login_hint here?
@@ -41,6 +46,15 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
       }
     ),
     function(req, res, next) {
+      var origin = req.query.origin;
+      
+      var client = req.oauth2.client;
+      
+      if (client.webOrigins.indexOf(origin) == -1) {
+        return next(new oauth2orize.AuthorizationError('Invalid client for this origin.', 'access_denied'));
+      }
+      
+      
       console.log('OVERRIDE IDP IFRAME STUFF');
       req.oauth2.req.responseMode = '.iframerpc';
       req.oauth2.req.prompt = [ 'none' ];

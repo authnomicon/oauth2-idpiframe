@@ -4,6 +4,7 @@ var expect = require('chai').expect;
 var chai = require('chai');
 var sinon = require('sinon');
 var factory = require('../../../../com/rpc/http/actions/issuetoken');
+var oauth2orize = require('oauth2orize');
 
 
 describe('rpc/http/actions/issuetoken', function() {
@@ -111,6 +112,40 @@ describe('rpc/http/actions/issuetoken', function() {
         })
         .listen();
     }); // should evaluate request
+    
+    it('should reject request from client using unregistered origin', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(evaluate, clients, server, authenticate, state);
+      
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'issueToken',
+            response_type: 'token id_token',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net',
+            scope: 'profile email',
+            login_hint: 'AJMrCA...',
+            ss_domain: 'https://client.example.com'
+          };
+        })
+        .next(function(err, req, res) {
+          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
+          expect(err.message).to.equal('Invalid client for this origin.');
+          expect(err.code).to.equal('access_denied');
+          expect(err.status).to.equal(403);
+          
+          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
+          done();
+        })
+        .listen();
+    });
     
   }); // handler
   
