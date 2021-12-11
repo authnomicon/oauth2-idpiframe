@@ -49,11 +49,14 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
         return next(new oauth2orize.AuthorizationError('Missing required parameter: login_hint', 'invalid_request'));
       }
       
-      
       var client = req.oauth2.client;
-      
       if (client.webOrigins.indexOf(origin) == -1) {
         return next(new oauth2orize.AuthorizationError('Invalid client for this origin.', 'access_denied'));
+      }
+      
+      if (!req.user) {
+        // matches Google's response, even though non-standard
+        return res.status(200).json({ error: 'USER_LOGGED_OUT', detail: 'No active session found.' });
       }
       
       // TODO: Select user based on login hint, or make sure its the authed user
