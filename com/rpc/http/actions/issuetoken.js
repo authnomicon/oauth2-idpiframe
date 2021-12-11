@@ -35,25 +35,18 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
         });
       },
       function(txn, cb) {
-        console.log('IDP IFRAME IMMEDIATE');
-        console.log(txn)
-        
-        
-        
-        
-        
-        
-        // WIP: check the origin here
-        
-        // check login_hint here?
-        
         return cb(null, false);
       }
     ),
     function(req, res, next) {
       var origin = req.query.origin;
+      var loginHint = req.query.login_hint;
+      
       if (!origin) {
         return next(new oauth2orize.AuthorizationError('Missing required parameter: origin', 'invalid_request'));
+      }
+      if (!loginHint) {
+        return next(new oauth2orize.AuthorizationError('Missing required parameter: login_hint', 'invalid_request'));
       }
       
       
@@ -62,6 +55,8 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
       if (client.webOrigins.indexOf(origin) == -1) {
         return next(new oauth2orize.AuthorizationError('Invalid client for this origin.', 'access_denied'));
       }
+      
+      // TODO: Select user based on login hint, or make sure its the authed user
       
       
       console.log('OVERRIDE IDP IFRAME STUFF');

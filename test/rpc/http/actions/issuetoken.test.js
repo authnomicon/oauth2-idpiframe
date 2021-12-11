@@ -210,6 +210,39 @@ describe('rpc/http/actions/issuetoken', function() {
         .listen();
     }); // should reject request when missing origin parameter
     
+    it('should reject request when missing login hint parameter', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(evaluate, clients, server, authenticate, state);
+      
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'issueToken',
+            response_type: 'token id_token',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+        })
+        .next(function(err, req, res) {
+          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
+          expect(err.message).to.equal('Missing required parameter: login_hint');
+          expect(err.code).to.equal('invalid_request');
+          expect(err.status).to.equal(400);
+          
+          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
+          done();
+        })
+        .listen();
+    }); // should reject request when missing login hint parameter
+    
   }); // handler
   
 });
