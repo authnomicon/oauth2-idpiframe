@@ -13,6 +13,7 @@ describe('@authnomicon/oauth2-idpiframe', function() {
       
       expect(json.assembly.components).to.deep.equal([
         'oauth2/authorize/http/response/types/permission',
+        'oauth2/authorize/http/response/schemes/storagerelay',
         'oauth2/authorize/http/response/modes/iframerpc',
         'iframe/http/service',
         'rpc/http/service'
