@@ -42,6 +42,31 @@ describe('rpc/http/actions/checkorigin', function() {
         .listen();
     }); // should respond with valid origin
     
+    it('should respond to client that has no registered origins', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client'
+      });
+      
+      var handler = factory(clients);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net'
+          };
+        })
+        .finish(function() {
+          expect(this).to.have.status(403);
+          expect(this).to.have.body({ error: 'invalid_request' });
+          done();
+        })
+        .listen();
+    }); // should respond to client that has no registered origins
+    
     it('should respond to client using invalid origin', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {

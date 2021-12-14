@@ -115,6 +115,47 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should list single session
     
+    it('should respond to client that has no registered origins', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client'
+      });
+      
+      var handler = factory(loginHint, clients, authenticate);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .finish(function() {
+          expect(loginHint.generate.callCount).to.equal(0);
+          
+          expect(this).to.have.status(403);
+          expect(this).to.have.body({
+            error: 'access_denied',
+            error_description: 'Invalid client for this origin.'
+          });
+          done();
+        })
+        .listen();
+    }); // should respond to client that has no registered origins
+    
     it('should respond to client using invalid origin', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');

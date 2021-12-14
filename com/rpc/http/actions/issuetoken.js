@@ -50,7 +50,7 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
       }
       
       var client = req.oauth2.client;
-      if (client.webOrigins.indexOf(origin) == -1) {
+      if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
         return next(new oauth2orize.AuthorizationError('Invalid client for this origin.', 'access_denied'));
       }
       

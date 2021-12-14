@@ -13,7 +13,7 @@ exports = module.exports = function(clients) {
       if (!client) {
         return res.status(403).json({ error: 'invalid_request' });
       }
-      if (client.webOrigins.indexOf(origin) == -1) {
+      if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
         return res.status(403).json({ error: 'invalid_request' });
       }
     
