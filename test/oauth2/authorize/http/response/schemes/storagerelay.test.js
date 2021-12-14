@@ -86,6 +86,16 @@ describe('oauth2/authorize/http/response/schemes/storagerelay', function() {
         expect(v).to.deep.equal([ 'storagerelay://https/rp.com?id=auth304970', 'https://rp.com' ]);
       }); // should verify example redirect URI
       
+      it('should not verify when no registered origins', function() {
+        var client = {
+          id: 's6BhdRkqt3',
+          name: 'My Example Client'
+        };
+        
+        var v = scheme.verify(client, 'storagerelay://https/rp.com?id=auth304970');
+        expect(v).to.be.false;
+      }); // should not verify when no registered origins
+      
       it('should not verify unregistered origin', function() {
         var client = {
           id: 's6BhdRkqt3',
