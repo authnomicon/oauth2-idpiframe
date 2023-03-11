@@ -84,6 +84,42 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       .catch(done);
   }); // should create processor with responders
   
+  it('should create processor with responders but excluding query responder', function(done) {
+    var queryResponder = function(){};
+    var queryResponderComponent = new Object();
+    queryResponderComponent.create = sinon.stub().resolves(queryResponder);
+    queryResponderComponent.a = { '@mode': 'query' };
+    var fragmentResponder = function(){};
+    var fragmentResponderComponent = new Object();
+    fragmentResponderComponent.create = sinon.stub().resolves(fragmentResponder);
+    fragmentResponderComponent.a = { '@mode': 'fragment' };
+    
+    var container = new Object();
+    container.components = sinon.stub();
+    container.components.withArgs('module:oauth2orize.Responder').returns([
+      queryResponderComponent,
+      fragmentResponderComponent
+    ]);
+    
+    var permissionSpy = sinon.stub();
+    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+      'oauth2orize-permission': {
+        grant: { permission: permissionSpy }
+      }
+    });
+    
+    factory(null, logger, container)
+      .then(function(type) {
+        expect(permissionSpy).to.be.calledOnceWith({
+          modes: {
+            fragment: fragmentResponder
+          }
+        });
+        done();
+      })
+      .catch(done);
+  }); // should create processor with responders but excluding query responder
+  
   describe('issue', function() {
     var container = new Object();
     container.components = sinon.stub()
