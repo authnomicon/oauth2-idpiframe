@@ -121,7 +121,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
   }); // should create processor with responders but excluding query responder
   
   describe('default behavior', function() {
-    var loginHint = new Object();
+    var lhs = new Object();
     
     var issue;
     
@@ -129,7 +129,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       var container = new Object();
       container.components = sinon.stub()
       container.components.withArgs('module:oauth2orize.Responder').returns([]);
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      lhs.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       
       var permissionSpy = sinon.stub();
       var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
@@ -138,7 +138,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         }
       });
       
-      factory(loginHint, logger, container)
+      factory(lhs, logger, container)
         .then(function(processor) {
           expect(permissionSpy).to.be.calledOnceWith({
             modes: {}
@@ -173,7 +173,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       issue(client, user, ares, areq, {}, function(err, hint) {
         if (err) { return done(err); }
         
-        expect(loginHint.generate).to.be.calledOnceWith({
+        expect(lhs.generate).to.be.calledOnceWith({
           id: '248289761001',
           displayName: 'Jane Doe'
         }, {
@@ -187,5 +187,65 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     }); // should generate login hint
     
   }); // default behavior
+  
+  describe('with failing login hint service', function() {
+    var lhs = new Object();
+    
+    var issue;
+    
+    beforeEach(function(done) {
+      var container = new Object();
+      container.components = sinon.stub()
+      container.components.withArgs('module:oauth2orize.Responder').returns([]);
+      lhs.generate = sinon.stub().yieldsAsync(new Error('something went wrong'));
+      
+      var permissionSpy = sinon.stub();
+      var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+        'oauth2orize-permission': {
+          grant: { permission: permissionSpy }
+        }
+      });
+      
+      factory(lhs, logger, container)
+        .then(function(processor) {
+          expect(permissionSpy).to.be.calledOnceWith({
+            modes: {}
+          });
+          
+          issue = permissionSpy.getCall(0).args[1];
+          done();
+        })
+        .catch(done);
+    });
+    
+    it('should generate login hint', function(done) {
+      var client = {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        redirectURIs: [ 'https://client.example.com/cb' ]
+      };
+      var user = {
+        id: '248289761001',
+        displayName: 'Jane Doe'
+      };
+      var ares = {
+        allow: true
+      }
+      var areq = {
+        type: 'permission',
+        clientID: 's6BhdRkqt3',
+        redirectURI: 'https://client.example.com/cb',
+        state: 'xyz'
+      }
+      
+      issue(client, user, ares, areq, {}, function(err, hint) {
+        expect(err).to.be.an.instanceof(Error);
+        expect(err.message).to.equal('something went wrong');
+        expect(hint).to.be.undefined;
+        done();
+      });
+    }); // should generate login hint
+    
+  }); // with failing login hint service
   
 });
