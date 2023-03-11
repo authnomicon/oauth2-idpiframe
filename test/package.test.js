@@ -12,12 +12,12 @@ describe('@authnomicon/oauth2-idpiframe', function() {
       expect(json.assembly.namespace).to.equal('org.authnomicon/oauth2/idpiframe');
       
       expect(json.assembly.components).to.deep.equal([
+        'loginhintservice',
         'oauth2/authorize/http/response/types/permission',
         'oauth2/authorize/http/response/schemes/storagerelay',
         'oauth2/authorize/http/response/modes/iframerpc',
         'iframe/http/service',
-        'rpc/http/service',
-        'id/loginhint/default'
+        'rpc/http/service'
       ]);
     });
   });
