@@ -4,7 +4,7 @@ exports = module.exports = function(loginHint, logger, C) {
   
   return Promise.resolve(null)
     .then(function() {
-      var modes = {};
+      var responders = {};
   
       return new Promise(function(resolve, reject) {
         var components = C.components('module:oauth2orize.Responder')
@@ -13,7 +13,7 @@ exports = module.exports = function(loginHint, logger, C) {
         (function iter(i) {
           var component = components[i];
           if (!component) {
-            return resolve(modes);
+            return resolve(responders);
           }
       
           key = component.a['@mode'];
@@ -31,7 +31,7 @@ exports = module.exports = function(loginHint, logger, C) {
           component.create()
             .then(function(mode) {
               logger.info("Loaded response mode '" + key +  "' for OAuth 2.0 implicit grant");
-              modes[key] = mode;
+              responders[key] = mode;
               iter(i + 1);
             }, function(err) {
               var msg = 'Failed to load response mode for OAuth 2.0 authorization code grant:\n';
@@ -42,11 +42,11 @@ exports = module.exports = function(loginHint, logger, C) {
         })(0);
       });
     })
-    .then(function(modes) {
+    .then(function(responders) {
       return oauth2orize.grant.permission({
-        modes: modes
+        modes: responders
       }, function(client, user, ares, areq, locals, cb) {
-        loginHint.generate(user.id, client, function(err, hint) {
+        loginHint.generate(user, client, function(err, hint) {
           if (err) { return cb(err); }
           return cb(null, hint);
         });

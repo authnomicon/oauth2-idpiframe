@@ -150,7 +150,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         .catch(done);
     });
     
-    it('should issue login hint', function(done) {
+    it('should generate login hint', function(done) {
       var client = {
         id: 's6BhdRkqt3',
         name: 'My Example Client',
@@ -173,9 +173,10 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       issue(client, user, ares, areq, {}, function(err, hint) {
         if (err) { return done(err); }
         
-        expect(loginHint.generate.callCount).to.equal(1);
-        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
-        expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
+        expect(loginHint.generate).to.be.calledOnceWith({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        }, {
           id: 's6BhdRkqt3',
           name: 'My Example Client',
           redirectURIs: [ 'https://client.example.com/cb' ]
@@ -183,7 +184,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         expect(hint).to.equal('AJMrCA...');
         done();
       });
-    });
+    }); // should generate login hint
     
   }); // default behavior
   
