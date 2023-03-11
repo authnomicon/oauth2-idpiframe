@@ -57,7 +57,7 @@ exports = module.exports = function(loginHint, logger, C) {
 exports['@implements'] = 'module:oauth2orize.RequestProcessor';
 exports['@type'] = 'permission';
 exports['@require'] = [
-  '../../../../../id/loginhint',
+  'module:@authnomicon/oauth2-idpiframe.LoginHintService',
   'http://i.bixbyjs.org/Logger',
   '!container'
 ];

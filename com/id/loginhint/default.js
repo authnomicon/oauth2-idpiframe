@@ -13,4 +13,4 @@ exports = module.exports = function() {
 };
 
 exports['@singleton'] = true;
-exports['@require'] = [];
+exports['@implements'] = 'module:@authnomicon/oauth2-idpiframe.LoginHintService';
