@@ -9,6 +9,8 @@ exports = module.exports = function() {
       
       return cb(null, user.id);
     }
+    
+    // TODO: reverse()
   };
 };
 
