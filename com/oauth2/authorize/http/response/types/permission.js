@@ -8,7 +8,7 @@ exports = module.exports = function(loginHint, logger, C) {
   
       return new Promise(function(resolve, reject) {
         var components = C.components('module:oauth2orize.Responder')
-          , key;
+          , mode;
   
         (function iter(i) {
           var component = components[i];
@@ -16,8 +16,8 @@ exports = module.exports = function(loginHint, logger, C) {
             return resolve(responders);
           }
       
-          key = component.a['@mode'];
-          if (key == 'query') {
+          mode = component.a['@mode'];
+          if (mode == 'query') {
             // The default response mode of this response type is the fragment
             // encoding.  In accordance with security considerations, this
             // response type must not use query encoding, in order to avoid
@@ -29,15 +29,15 @@ exports = module.exports = function(loginHint, logger, C) {
           }
       
           component.create()
-            .then(function(mode) {
-              logger.info("Loaded response mode '" + key +  "' for OAuth 2.0 implicit grant");
-              responders[key] = mode;
+            .then(function(responder) {
+              logger.info("Loaded response mode '" + mode +  "' for OAuth 2.0 implicit grant");
+              responders[mode] = responder;
               iter(i + 1);
             }, function(err) {
               var msg = 'Failed to load response mode for OAuth 2.0 authorization code grant:\n';
               msg += err.stack;
               logger.warning(msg);
-              return iter(i + 1);
+              iter(i + 1);
             })
         })(0);
       });
