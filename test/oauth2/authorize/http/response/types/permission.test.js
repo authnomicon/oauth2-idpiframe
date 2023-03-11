@@ -25,11 +25,10 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     debug: function(){}
   };
   
-  it('should create response type without response modes', function(done) {
+  it('should create processor without responders', function(done) {
     var container = new Object();
     container.components = sinon.stub();
     container.components.withArgs('module:oauth2orize.Responder').returns([]);
-    container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseParameters').returns([]);
     
     var permissionSpy = sinon.stub();
     var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
@@ -40,12 +39,50 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     
     factory(null, logger, container)
       .then(function(type) {
-        expect(permissionSpy).to.be.calledOnce;
-        expect(permissionSpy).to.be.calledWith({ modes: {} });
+        expect(permissionSpy).to.be.calledOnceWith({
+          modes: {}
+        });
         done();
       })
       .catch(done);
   }); // should create response type without response modes
+  
+  it('should create processor with responders', function(done) {
+    var fragmentResponder = function(){};
+    var fragmentResponderComponent = new Object();
+    fragmentResponderComponent.create = sinon.stub().resolves(fragmentResponder);
+    fragmentResponderComponent.a = { '@mode': 'fragment' };
+    var formPostResponder = function(){};
+    var formPostResponderComponent = new Object();
+    formPostResponderComponent.create = sinon.stub().resolves(formPostResponder);
+    formPostResponderComponent.a = { '@mode': 'form_post' };
+    
+    var container = new Object();
+    container.components = sinon.stub();
+    container.components.withArgs('module:oauth2orize.Responder').returns([
+      fragmentResponderComponent,
+      formPostResponderComponent
+    ]);
+    
+    var permissionSpy = sinon.stub();
+    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+      'oauth2orize-permission': {
+        grant: { permission: permissionSpy }
+      }
+    });
+    
+    factory(null, logger, container)
+      .then(function(type) {
+        expect(permissionSpy).to.be.calledOnceWith({
+          modes: {
+            fragment: fragmentResponder,
+            form_post: formPostResponder
+          }
+        });
+        done();
+      })
+      .catch(done);
+  }); // should create processor with responders
   
   describe('issue', function() {
     var container = new Object();
