@@ -1,6 +1,7 @@
+// Module dependencies.
+var oauth2orize = require('oauth2orize-permission');
+
 exports = module.exports = function(loginHint, logger, C) {
-  var oauth2orize = require('oauth2orize-permission');
-  
   
   return Promise.resolve(null)
     .then(function() {
