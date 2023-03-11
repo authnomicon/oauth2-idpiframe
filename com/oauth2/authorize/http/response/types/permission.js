@@ -54,7 +54,7 @@ exports = module.exports = function(loginHint, logger, C) {
     });
 };
 
-exports['@implements'] = 'http://i.authnomicon.org/oauth2/authorization/http/ResponseType';
+exports['@implements'] = 'module:oauth2orize.RequestProcessor';
 exports['@type'] = 'permission';
 exports['@require'] = [
   '../../../../../id/loginhint',
