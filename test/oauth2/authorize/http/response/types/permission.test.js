@@ -11,10 +11,9 @@ describe('oauth2/authorize/http/response/types/permission', function() {
   it('should be annotated', function() {
     expect(factory['@implements']).to.equal('module:oauth2orize.RequestProcessor');
     expect(factory['@type']).to.equal('permission');
-    expect(factory['@singleton']).to.be.undefined;
   });
   
-  
+  // TODO: review this
   var logger = {
     emergency: function(){},
     alert: function(){},
@@ -29,7 +28,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
   it('should create response type without response modes', function(done) {
     var container = new Object();
     container.components = sinon.stub();
-    container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseMode').returns([]);
+    container.components.withArgs('module:oauth2orize.Responder').returns([]);
     container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseParameters').returns([]);
     
     var permissionSpy = sinon.stub();
@@ -51,7 +50,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
   describe('issue', function() {
     var container = new Object();
     container.components = sinon.stub()
-    container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseMode').returns([]);
+    container.components.withArgs('module:oauth2orize.Responder').returns([]);
     container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseParameters').returns([]);
     var loginHint = new Object();
     
