@@ -120,27 +120,30 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       .catch(done);
   }); // should create processor with responders but excluding query responder
   
-  describe('issue', function() {
-    var container = new Object();
-    container.components = sinon.stub()
-    container.components.withArgs('module:oauth2orize.Responder').returns([]);
-    container.components.withArgs('http://i.authnomicon.org/oauth2/authorization/http/ResponseParameters').returns([]);
+  describe('default behavior', function() {
     var loginHint = new Object();
-    
-    var permissionSpy = sinon.stub();
-    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
-      'oauth2orize-permission': {
-        grant: { permission: permissionSpy }
-      }
-    });
     
     var issue;
     
     beforeEach(function(done) {
+      var container = new Object();
+      container.components = sinon.stub()
+      container.components.withArgs('module:oauth2orize.Responder').returns([]);
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       
+      var permissionSpy = sinon.stub();
+      var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+        'oauth2orize-permission': {
+          grant: { permission: permissionSpy }
+        }
+      });
+      
       factory(loginHint, logger, container)
-        .then(function(type) {
+        .then(function(processor) {
+          expect(permissionSpy).to.be.calledOnceWith({
+            modes: {}
+          });
+          
           issue = permissionSpy.getCall(0).args[1];
           done();
         })
@@ -180,8 +183,8 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         expect(hint).to.equal('AJMrCA...');
         done();
       });
-    }); // should issue login hint
+    });
     
-  }); // issue
+  }); // default behavior
   
 });
