@@ -218,7 +218,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         .catch(done);
     });
     
-    it('should generate login hint', function(done) {
+    it('should yield error', function(done) {
       var client = {
         id: 's6BhdRkqt3',
         name: 'My Example Client',
@@ -244,7 +244,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
         expect(hint).to.be.undefined;
         done();
       });
-    }); // should generate login hint
+    }); // should yield error
     
   }); // with failing login hint service
   
