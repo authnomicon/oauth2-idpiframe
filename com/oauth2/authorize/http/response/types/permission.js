@@ -1,7 +1,7 @@
 // Module dependencies.
 var oauth2orize = require('oauth2orize-permission');
 
-exports = module.exports = function(loginHint, logger, C) {
+exports = module.exports = function(lhs, logger, C) {
   
   return Promise.resolve(null)
     .then(function() {
@@ -47,7 +47,7 @@ exports = module.exports = function(loginHint, logger, C) {
       return oauth2orize.grant.permission({
         modes: responders
       }, function(client, user, ares, areq, locals, cb) {
-        loginHint.generate(user, client, function(err, hint) {
+        lhs.generate(user, client, function(err, hint) {
           if (err) { return cb(err); }
           return cb(null, hint);
         });
