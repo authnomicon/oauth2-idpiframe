@@ -18,7 +18,7 @@ describe('@authnomicon/oauth2-idpiframe', function() {
         'oauth2/schemes/storagerelay',
         'oauth2/authorize/http/response/modes/iframerpc',
         'iframe/service',
-        'rpc/http/service'
+        'rpc/service'
       ]);
     });
   });
