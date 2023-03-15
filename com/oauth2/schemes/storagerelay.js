@@ -5,14 +5,13 @@ exports = module.exports = function() {
   
   return function(redirectURI) {
     var uri = url.parse(redirectURI);
-    var wo = {
+    var ruri = {
       protocol: uri.hostname + ':',
       host: uri.pathname.slice(1),
       slashes: true
     };
     
-    var origin = url.format(wo);
-    return origin;
+    return url.format(ruri);
   };
 };
 
