@@ -1,4 +1,4 @@
-exports = module.exports = function(loginHint, clients, authenticate) {
+exports = module.exports = function(loginHint, clients, authenticator) {
   
   function validateClient(req, res, next) {
     var clientID = req.query.client_id;
@@ -83,7 +83,7 @@ exports = module.exports = function(loginHint, clients, authenticate) {
   
   
   return [
-    authenticate([ 'session', 'anonymous' ], { multi: true }),
+    authenticator.authenticate([ 'session', 'anonymous' ], { multi: true }),
     validateClient,
     list
   ];
@@ -91,7 +91,7 @@ exports = module.exports = function(loginHint, clients, authenticate) {
 
 exports['@action'] = 'listSessions';
 exports['@require'] = [
-  '../../../id/loginhint',
+  'module:@authnomicon/oauth2-idpiframe.LoginHintService',
   'http://i.authnomicon.org/oauth2/ClientDirectory',
-  'http://i.bixbyjs.org/http/middleware/authenticate'
+  'module:@authnomicon/session.Authenticator'
 ];

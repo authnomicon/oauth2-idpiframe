@@ -1,4 +1,4 @@
-exports = module.exports = function(evaluate, clients, server, authenticate, state) {
+exports = module.exports = function(evaluate, clients, server, authenticator, store) {
   var oauth2orize = require('oauth2orize');
   
   // TODO: Evaluate is going to need to process login hint and/or id token to select appropriate user
@@ -10,8 +10,8 @@ exports = module.exports = function(evaluate, clients, server, authenticate, sta
       console.log(req.query);
       next();
     },
-    state({ external: true }),
-    authenticate([ 'session', 'anonymous' ], { multi: true }),
+    //state({ external: true }), // FIXME: is store argument to component needed?
+    authenticator.authenticate([ 'session', 'anonymous' ], { multi: true }),
     server.authorization(
       function validateClient(clientID, redirectURI, cb) {
         console.log('IDP IFRAME VALIDATE CLIENT');
@@ -82,6 +82,6 @@ exports['@require'] = [
   'org.authnomicon/oauth2/authorize/http/middleware/evaluate',
   'http://i.authnomicon.org/oauth2/ClientDirectory',
   'org.authnomicon/oauth2/http/server',
-  'http://i.bixbyjs.org/http/middleware/authenticate',
-  'http://i.bixbyjs.org/http/middleware/state'
+  'module:@authnomicon/session.Authenticator',
+  'module:flowstate.Store'
 ];

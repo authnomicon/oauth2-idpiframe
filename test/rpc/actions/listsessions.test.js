@@ -24,7 +24,7 @@ describe('rpc/http/actions/listsessions', function() {
   it('should create handler', function() {
     var authenticateSpy = sinon.spy(authenticate);
     
-    var handler = factory(null, null, authenticateSpy);
+    var handler = factory(null, null, { authenticate: authenticateSpy });
     
     expect(authenticateSpy).to.be.calledOnce;
     expect(authenticateSpy).to.be.calledWithExactly([ 'session', 'anonymous' ], { multi: true });
@@ -42,7 +42,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -76,7 +76,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -124,7 +124,7 @@ describe('rpc/http/actions/listsessions', function() {
         name: 'My Example Client'
       });
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -166,7 +166,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -204,7 +204,7 @@ describe('rpc/http/actions/listsessions', function() {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -242,7 +242,7 @@ describe('rpc/http/actions/listsessions', function() {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -279,7 +279,7 @@ describe('rpc/http/actions/listsessions', function() {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, authenticate);
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
