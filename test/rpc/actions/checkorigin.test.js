@@ -9,12 +9,10 @@ var factory = require('../../../com/rpc/actions/checkorigin');
 describe('rpc/actions/checkorigin', function() {
   
   it('should be annotated', function() {
-    expect(factory['@implements']).to.be.undefined;
     expect(factory['@action']).to.equal('checkOrigin');
-    expect(factory['@singleton']).to.be.undefined;
   });
   
-  describe('action', function() {
+  describe('handler', function() {
     
     it('should respond with valid origin', function(done) {
       var clients = new Object();

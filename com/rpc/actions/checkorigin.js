@@ -1,3 +1,4 @@
+// This is triggered by a call to monitorClient from within the IDP Iframe.
 exports = module.exports = function(clients) {
   
   function check(req, res, next) {
@@ -16,7 +17,10 @@ exports = module.exports = function(clients) {
       if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
         return res.status(403).json({ error: 'invalid_request' });
       }
-    
+      
+      // NOTE: Google responds with `blocked` and `supressed`, although it is unclear
+      // what those parameters do.
+      // {valid: true, blocked: false, suppressed: false}
       return res.json({ valid: true });
     });
   }
