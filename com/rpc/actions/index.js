@@ -1,5 +1,5 @@
 exports = module.exports = function(checkOrigin, issueToken, listSessions) {
-  var actions = require('../../../../lib/actions');
+  var actions = require('../../../lib/actions');
   
   
   var router = new actions.Router();

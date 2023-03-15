@@ -1,10 +1,10 @@
 /* global describe, it */
 
 var expect = require('chai').expect;
-var factory = require('../../../com/rpc/http/service');
+var factory = require('../../com/rpc/service');
 
 
-describe('rpc/http/service', function() {
+describe('rpc/service', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.equal('http://i.bixbyjs.org/http/Service');

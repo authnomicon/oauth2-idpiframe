@@ -3,7 +3,7 @@
 var expect = require('chai').expect;
 var chai = require('chai');
 var sinon = require('sinon');
-var factory = require('../../../../com/rpc/http/actions/listsessions');
+var factory = require('../../../com/rpc/actions/listsessions');
 
 
 describe('rpc/http/actions/listsessions', function() {

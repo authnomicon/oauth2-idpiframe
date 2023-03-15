@@ -3,11 +3,11 @@
 var expect = require('chai').expect;
 var chai = require('chai');
 var sinon = require('sinon');
-var factory = require('../../../../com/rpc/http/actions/issuetoken');
+var factory = require('../../../com/rpc/actions/issuetoken');
 var oauth2orize = require('oauth2orize');
 
 
-describe('rpc/http/actions/issuetoken', function() {
+describe('rpc/actions/issuetoken', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.be.undefined;

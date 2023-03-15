@@ -3,10 +3,10 @@
 var expect = require('chai').expect;
 var chai = require('chai');
 var sinon = require('sinon');
-var factory = require('../../../../com/rpc/http/handlers/rpc');
+var factory = require('../../../com/rpc/handlers/rpc');
 
 
-describe('rpc/http/handlers/rpc', function() {
+describe('rpc/handlers/rpc', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.be.undefined;
