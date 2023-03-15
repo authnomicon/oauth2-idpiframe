@@ -3,10 +3,10 @@
 var expect = require('chai').expect;
 var $require = require('proxyquire');
 var sinon = require('sinon');
-var factory = require('../../../../../../com/oauth2/authorize/http/response/schemes/storagerelay');
+var factory = require('../../../com/oauth2/schemes/storagerelay');
 
 
-describe('oauth2/authorize/http/response/schemes/storagerelay', function() {
+describe('oauth2/schemes/storagerelay', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.equal('module:@authnomicon/oauth2.resolveRedirectURISchemeFn');

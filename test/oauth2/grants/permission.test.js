@@ -3,10 +3,10 @@
 var expect = require('chai').expect;
 var $require = require('proxyquire');
 var sinon = require('sinon');
-var factory = require('../../../../../../com/oauth2/authorize/http/response/types/permission');
+var factory = require('../../../com/oauth2/grants/permission');
 
 
-describe('oauth2/authorize/http/response/types/permission', function() {
+describe('oauth2/grants/permission', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.equal('module:oauth2orize.RequestProcessor');
@@ -31,7 +31,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     container.components.withArgs('module:oauth2orize.Responder').returns([]);
     
     var permissionSpy = sinon.stub();
-    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+    var factory = $require('../../../com/oauth2/grants/permission', {
       'oauth2orize-permission': {
         grant: { permission: permissionSpy }
       }
@@ -65,7 +65,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     ]);
     
     var permissionSpy = sinon.stub();
-    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+    var factory = $require('../../../com/oauth2/grants/permission', {
       'oauth2orize-permission': {
         grant: { permission: permissionSpy }
       }
@@ -102,7 +102,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
     ]);
     
     var permissionSpy = sinon.stub();
-    var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+    var factory = $require('../../../com/oauth2/grants/permission', {
       'oauth2orize-permission': {
         grant: { permission: permissionSpy }
       }
@@ -132,7 +132,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       lhs.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       
       var permissionSpy = sinon.stub();
-      var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+      var factory = $require('../../../com/oauth2/grants/permission', {
         'oauth2orize-permission': {
           grant: { permission: permissionSpy }
         }
@@ -200,7 +200,7 @@ describe('oauth2/authorize/http/response/types/permission', function() {
       lhs.generate = sinon.stub().yieldsAsync(new Error('something went wrong'));
       
       var permissionSpy = sinon.stub();
-      var factory = $require('../../../../../../com/oauth2/authorize/http/response/types/permission', {
+      var factory = $require('../../../com/oauth2/grants/permission', {
         'oauth2orize-permission': {
           grant: { permission: permissionSpy }
         }
