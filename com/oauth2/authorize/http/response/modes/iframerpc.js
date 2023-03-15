@@ -1,3 +1,5 @@
+// NOTE: used internally in issueToken RPC action
+
 exports = module.exports = function(loginHint) {
   return require('oauth2orize-iframerpcrm')(function(txn, cb) {
     loginHint.generate(txn.user.id, txn.client, function(err, hint) {

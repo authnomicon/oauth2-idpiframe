@@ -13,6 +13,7 @@ describe('@authnomicon/oauth2-idpiframe', function() {
       
       expect(json.assembly.components).to.deep.equal([
         'loginhintservice',
+        'oauth2/authorize/http/request/idpiframe',
         'oauth2/authorize/http/response/types/permission',
         'oauth2/authorize/http/response/schemes/storagerelay',
         'oauth2/authorize/http/response/modes/iframerpc',
