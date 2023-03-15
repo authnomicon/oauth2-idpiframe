@@ -9,7 +9,7 @@ var factory = require('../../../../../../com/oauth2/authorize/http/response/sche
 describe('oauth2/authorize/http/response/schemes/storagerelay', function() {
   
   it('should be annotated', function() {
-    expect(factory['@implements']).to.equal('http://i.authnomicon.org/oauth2/authorization/http/RedirectURIScheme');
+    expect(factory['@implements']).to.equal('module:@authnomicon/oauth2.resolveRedirectURISchemeFn');
     expect(factory['@scheme']).to.equal('storagerelay');
   });
   
