@@ -1,10 +1,10 @@
 /* global describe, it */
 
 var expect = require('chai').expect;
-var factory = require('../../../com/iframe/http/service');
+var factory = require('../../com/iframe/service');
 
 
-describe('iframe/http/service', function() {
+describe('iframe/service', function() {
   
   it('should be annotated', function() {
     expect(factory['@implements']).to.equal('http://i.bixbyjs.org/http/Service');
