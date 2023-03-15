@@ -16,35 +16,35 @@ describe('oauth2/authorize/http/response/schemes/storagerelay', function() {
   describe('resolve', function() {
     var resolve = factory();
     
-    it('should verify redirect URI with http scheme', function() {
-      var v = resolve('storagerelay://http/example.com?id=auth304970');
-      expect(v).to.deep.equal('http://example.com');
-    }); // should verify redirect URI with http scheme
+    it('should resolve URL with http scheme', function() {
+      var url = resolve('storagerelay://http/example.com?id=auth304970');
+      expect(url).to.deep.equal('http://example.com');
+    }); // should resolve URL with http scheme
     
-    it('should verify redirect URI with http scheme and port', function() {
-      var v = resolve('storagerelay://http/example.com:8888?id=auth304970');
-      expect(v).to.deep.equal('http://example.com:8888');
-    }); // should verify redirect URI with http scheme and port
+    it('should resolve URL with http scheme and port', function() {
+      var url = resolve('storagerelay://http/example.com:8080?id=auth304970');
+      expect(url).to.deep.equal('http://example.com:8080');
+    }); // should resolve URL with http scheme and port
     
-    it('should verify redirect URI with https scheme', function() {
-      var v = resolve('storagerelay://https/example.com?id=auth304970');
-      expect(v).to.deep.equal('https://example.com');
-    }); // should verify redirect URI with https scheme
+    it('should resolve URL with https scheme', function() {
+      var url = resolve('storagerelay://https/example.com?id=auth304970');
+      expect(url).to.deep.equal('https://example.com');
+    }); // should resolve URL with https scheme
     
-    it('should verify redirect URI with https scheme and port', function() {
-      var v = resolve('storagerelay://https/example.com:8888?id=auth304970');
-      expect(v).to.deep.equal('https://example.com:8888');
-    }); // should verify redirect URI with https scheme
+    it('should resolve URL with https scheme and port', function() {
+      var url = resolve('storagerelay://https/example.com:8080?id=auth304970');
+      expect(url).to.deep.equal('https://example.com:8080');
+    }); // should resolve URL with https scheme and port
     
-    it('should verify redirect URI with chrome-extension scheme', function() {
-      var v = resolve('storagerelay://chrome-extension/example?id=auth304970');
-      expect(v).to.deep.equal('chrome-extension://example');
-    }); // should verify redirect URI with chrome-extension scheme
+    it('should resolve URL with chrome-extension scheme', function() {
+      var url = resolve('storagerelay://chrome-extension/example?id=auth304970');
+      expect(url).to.deep.equal('chrome-extension://example');
+    }); // should resolve URL with chrome-extension scheme
     
-    it('should verify example redirect URI', function() {
-      var v = resolve('storagerelay://https/rp.com?id=auth304970');
-      expect(v).to.deep.equal('https://rp.com');
-    }); // should verify example redirect URI
+    it('should resolve example URI from specification', function() {
+      var url = resolve('storagerelay://https/rp.com?id=auth304970');
+      expect(url).to.deep.equal('https://rp.com');
+    }); //should resolve example URI from specification
     
   }); // resolve
   
