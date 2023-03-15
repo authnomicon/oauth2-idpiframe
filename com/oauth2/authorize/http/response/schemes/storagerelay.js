@@ -18,4 +18,3 @@ exports = module.exports = function() {
 
 exports['@implements'] = 'http://i.authnomicon.org/oauth2/authorization/http/RedirectURIScheme';
 exports['@scheme'] = 'storagerelay';
-exports['@require'] = [];
