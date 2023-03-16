@@ -18,19 +18,14 @@ exports = module.exports = function(clients) {
       if (err) { return next(err); }
       if (!client) {
         return next(new oauth2orize.TokenError('The OAuth client was not found.', 'invalid_client'));
-        //return res.status(403).json({ error: 'invalid_request' });
       }
       if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
-        
         // NOTE: Google's response is as follows.  What is surpressed?
         // {"valid":false,"blocked":true,"suppressed":false}
         // or
         // {"valid":false,"blocked":false,"suppressed":false}
         // blocked seems to indicate the client doesn't have this feature
-        
         return res.json({ valid: false, blocked: false });
-        
-        //return res.status(403).json({ error: 'invalid_request' });
       }
       
       // NOTE: Google responds with `blocked` and `supressed`, although it is unclear
