@@ -20,7 +20,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
         return next(new oauth2orize.TokenError('The OAuth client was not found.', 'invalid_client'));
       }
       if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
-        return res.status(403).json({ error: 'access_denied', error_description: 'Invalid client for this origin.' });
+        return next(new oauth2orize.TokenError('Invalid client for this origin.', 'access_denied', null, 403));
       }
       
       res.locals.client = client;

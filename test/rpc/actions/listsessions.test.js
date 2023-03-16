@@ -116,90 +116,6 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should list single session
     
-    it('should respond to client that has no registered origins', function(done) {
-      var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
-      var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client'
-      });
-      
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
-    
-      chai.express.use(handler)
-        .request(function(req, res) {
-          req.query = {
-            action: 'listSessions',
-            client_id: 's6BhdRkqt3',
-            origin: 'https://client.example.net',
-            scope: 'profile email',
-            ss_domain: 'https://client.example.com'
-          };
-          req.user = {
-            id: '248289761001',
-            displayName: 'Jane Doe'
-          }
-          req.authInfo =  {
-            sessionSelector: '0'
-          }
-        })
-        .finish(function() {
-          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
-          expect(loginHint.generate.callCount).to.equal(0);
-          
-          expect(this).to.have.status(403);
-          expect(this).to.have.body({
-            error: 'access_denied',
-            error_description: 'Invalid client for this origin.'
-          });
-          done();
-        })
-        .listen();
-    }); // should respond to client that has no registered origins
-    
-    it('should respond to client using invalid origin', function(done) {
-      var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
-      var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
-      
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
-    
-      chai.express.use(handler)
-        .request(function(req, res) {
-          req.query = {
-            action: 'listSessions',
-            client_id: 's6BhdRkqt3',
-            origin: 'https://client.example.net',
-            scope: 'profile email',
-            ss_domain: 'https://client.example.com'
-          };
-          req.user = {
-            id: '248289761001',
-            displayName: 'Jane Doe'
-          }
-          req.authInfo =  {
-            sessionSelector: '0'
-          }
-        })
-        .finish(function() {
-          expect(loginHint.generate.callCount).to.equal(0);
-          
-          expect(this).to.have.status(403);
-          expect(this).to.have.body({
-            error: 'access_denied',
-            error_description: 'Invalid client for this origin.'
-          });
-          done();
-        })
-        .listen();
-    }); // should respond to client using invalid origin
-    
     it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
@@ -237,6 +153,89 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .listen();
     }); // should respond to unknown client
+    
+    it('should next with error when origin is invalid', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(loginHint.generate).to.not.be.called;
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('Invalid client for this origin.');
+          expect(err.code).to.equal('access_denied');
+          expect(err.status).to.equal(403);
+          done();
+        })
+        .listen();
+    }); // should next with error when origin is invalid
+    
+    it('should next with error when client has no registered origins', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client'
+      });
+      
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(loginHint.generate).to.not.be.called;
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('Invalid client for this origin.');
+          expect(err.code).to.equal('access_denied');
+          expect(err.status).to.equal(403);
+          done();
+        })
+        .listen();
+    }); // should next with error when client has no registered origins
     
     it('should respond when missing client id parameter', function(done) {
       var loginHint = new Object();
