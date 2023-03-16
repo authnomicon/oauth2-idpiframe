@@ -1,9 +1,9 @@
 // Module dependencies.
 var express = require('express');
 
-exports = module.exports = function(rpcHandler) {
+exports = module.exports = function(rpcRouter) {
   var router = express.Router();
-  router.get('/', rpcHandler);
+  router.get('/', rpcRouter.handle.bind(rpcRouter));
   
   return router;
 };
@@ -11,5 +11,5 @@ exports = module.exports = function(rpcHandler) {
 exports['@implements'] = 'http://i.bixbyjs.org/http/Service';
 exports['@path'] = '/oauth2/iframerpc';
 exports['@require'] = [
-  './handlers/rpc'
+  './rpc'
 ];
