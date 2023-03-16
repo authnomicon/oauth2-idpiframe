@@ -68,7 +68,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
         if (infos[i - 1].sessionSelector) {
           session.session_state = {
             extraQueryParams: {
-              ss: infos[i - 1].sessionSelector
+              authuser: infos[i - 1].sessionSelector
             }
           };
         }

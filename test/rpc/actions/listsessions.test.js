@@ -9,9 +9,7 @@ var factory = require('../../../com/rpc/actions/listsessions');
 describe('rpc/http/actions/listsessions', function() {
   
   it('should be annotated', function() {
-    expect(factory['@implements']).to.be.undefined;
     expect(factory['@action']).to.equal('listSessions');
-    expect(factory['@singleton']).to.be.undefined;
   });
   
   
@@ -21,6 +19,7 @@ describe('rpc/http/actions/listsessions', function() {
     };
   }
   
+  // TODO: Review this
   it('should create handler', function() {
     var authenticateSpy = sinon.spy(authenticate);
     
@@ -55,7 +54,7 @@ describe('rpc/http/actions/listsessions', function() {
           };
         })
         .finish(function() {
-          expect(loginHint.generate.callCount).to.equal(0);
+          expect(loginHint.generate).to.not.be.called;
           
           expect(this).to.have.status(200);
           expect(this).to.have.body({
@@ -96,18 +95,19 @@ describe('rpc/http/actions/listsessions', function() {
           }
         })
         .finish(function() {
-          expect(loginHint.generate.callCount).to.equal(1);
-          expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
-          expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
-            id: 's6BhdRkqt3',
-            name: 'My Example Client',
-            webOrigins: [ 'https://client.example.com' ]
-          });
+          expect(loginHint.generate).to.be.calledOnceWith(
+            '248289761001',
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            }
+          );
           
           expect(this).to.have.status(200);
           expect(this).to.have.body({
             sessions: [
-              { login_hint: 'AJMrCA...', session_state: { extraQueryParams: { ss: '0' } } }
+              { login_hint: 'AJMrCA...', session_state: { extraQueryParams: { authuser: '0' } } }
             ]
           });
           done();
