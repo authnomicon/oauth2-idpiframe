@@ -1,3 +1,5 @@
+var oauth2orize = require('oauth2orize');
+
 exports = module.exports = function(router) {
   
   function dispatch(req, res, next) {
@@ -9,7 +11,8 @@ exports = module.exports = function(router) {
   
   
   return [
-    dispatch
+    dispatch,
+    oauth2orize.errorHandler()
   ];
 };
 

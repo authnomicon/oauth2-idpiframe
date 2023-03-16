@@ -4,6 +4,8 @@ exports = module.exports = function(evaluate, clients, server, authenticator, st
   // TODO: Evaluate is going to need to process login hint and/or id token to select appropriate user
   //.   Maybe even reject requests without it.
   
+  // WIP: look at jarm response mode
+  
   return [
     function(req, res, next) {
       console.log('ISSUE TOKEN BODY');
