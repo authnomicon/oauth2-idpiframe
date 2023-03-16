@@ -1,7 +1,8 @@
+// Module dependencies.
+var express = require('express');
+
 exports = module.exports = function(rpcHandler) {
-  var express = require('express');
-  
-  var router = new express.Router();
+  var router = express.Router();
   router.get('/', rpcHandler);
   
   return router;
