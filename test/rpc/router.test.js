@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 var factory = require('../../com/rpc/router');
-var actions = require('../../lib/actions')
+var actions = require('../../lib/iframerpc')
 
 
 describe('rpc/router', function() {
