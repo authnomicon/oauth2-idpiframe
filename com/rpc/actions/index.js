@@ -1,11 +1,16 @@
+var oauth2orize = require('oauth2orize');
+
 exports = module.exports = function(checkOrigin, issueToken, listSessions) {
   var actions = require('../../../lib/actions');
   
   
   var router = new actions.Router();
-  router.use('checkOrigin', checkOrigin);
-  router.use('issueToken', issueToken);
-  router.use('listSessions', listSessions);
+  router.action('checkOrigin', checkOrigin);
+  router.action('issueToken', issueToken);
+  router.action('listSessions', listSessions);
+  router.use(function(req, res, next) {
+    return next(new oauth2orize.TokenError('Invalid action!', 'invalid_request'));
+  });
   
   return router;
 };
