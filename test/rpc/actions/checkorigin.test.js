@@ -123,6 +123,30 @@ describe('rpc/actions/checkorigin', function() {
         .listen();
     }); // should next with error when client is not found
     
+    it('should next with error when read from client directory fails', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(new Error('something went wrong'));
+      
+      var handler = factory(clients);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com'
+          };
+        })
+        .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('something went wrong');
+          done();
+        })
+        .listen();
+    }); // should next with error when read from client directory fails
+    
     it('should next with error when request is missing origin parameter', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
