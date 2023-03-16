@@ -33,6 +33,8 @@ describe('rpc/actions/checkorigin', function() {
           };
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          
           expect(this).to.have.status(200);
           expect(this).to.have.body({ valid: true });
           done();
@@ -59,6 +61,8 @@ describe('rpc/actions/checkorigin', function() {
           };
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          
           expect(this).to.have.status(200);
           expect(this).to.have.body({ valid: false, blocked: false });
           done();
@@ -84,6 +88,8 @@ describe('rpc/actions/checkorigin', function() {
           };
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          
           expect(this).to.have.status(200);
           expect(this).to.have.body({ valid: false, blocked: false });
           done();
@@ -106,6 +112,8 @@ describe('rpc/actions/checkorigin', function() {
           };
         })
         .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          
           expect(err).to.be.an.instanceOf(Error);
           expect(err.message).to.equal('The OAuth client was not found.');
           expect(err.code).to.equal('invalid_client');
