@@ -1,6 +1,7 @@
 /* global describe, it */
 
 var expect = require('chai').expect;
+var sinon = require('sinon');
 var factory = require('../../com/rpc/service');
 
 
@@ -13,12 +14,15 @@ describe('rpc/service', function() {
   });
   
   it('should construct service', function() {
-    function rpcHandler() {};
+    var router = new Object();
+    router.handle = function(){};
+    sinon.stub(router.handle, 'bind').returnsThis();
     
-    var service = factory(rpcHandler);
+    var service = factory(router);
     
     expect(service).to.be.a('function');
     expect(service.length).to.equal(3);
+    expect(router.handle.bind).to.be.calledOnceWith(router);
   });
   
 });
