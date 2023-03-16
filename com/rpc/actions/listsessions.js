@@ -10,7 +10,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
       return next(new oauth2orize.TokenError('Missing required parameter: client_id', 'invalid_request'));
     }
     if (!origin) {
-      return res.status(400).json({ error: 'invalid_request', error_description: 'Missing required parameter: origin' });
+      return next(new oauth2orize.TokenError('Missing required parameter: origin', 'invalid_request'));
     }
     
     clients.read(clientID, function(err, client) {

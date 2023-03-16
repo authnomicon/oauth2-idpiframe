@@ -96,6 +96,7 @@ describe('rpc/http/actions/listsessions', function() {
           }
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           expect(loginHint.generate).to.be.calledOnceWith(
             '248289761001',
             {
@@ -152,7 +153,7 @@ describe('rpc/http/actions/listsessions', function() {
           done();
         })
         .listen();
-    }); // should respond to unknown client
+    }); // should next with error when client is not found
     
     it('should next with error when origin is invalid', function(done) {
       var loginHint = new Object();
@@ -278,11 +279,15 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should next with error when request is missing client_id parameter
     
-    it('should respond when missing origin parameter', function(done) {
+    it('should next with error when request is missing origin parameter', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null);
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
       
       var handler = factory(loginHint, clients, { authenticate: authenticate });
     
@@ -302,18 +307,18 @@ describe('rpc/http/actions/listsessions', function() {
             sessionSelector: '0'
           }
         })
-        .finish(function() {
-          expect(loginHint.generate.callCount).to.equal(0);
+        .next(function(err) {
+          expect(clients.read).to.not.be.called;
+          expect(loginHint.generate).to.not.be.called;
           
-          expect(this).to.have.status(400);
-          expect(this).to.have.body({
-            error: 'invalid_request',
-            error_description: 'Missing required parameter: origin'
-          });
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('Missing required parameter: origin');
+          expect(err.code).to.equal('invalid_request');
+          expect(err.status).to.equal(400);
           done();
         })
         .listen();
-    }); // should respond when missing origin parameter
+    }); // should next with error when request is missing origin parameter
     
   }); // handler
   
