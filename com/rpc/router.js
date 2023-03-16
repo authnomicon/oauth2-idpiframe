@@ -1,10 +1,9 @@
+// Module dependencies.
 var oauth2orize = require('oauth2orize');
+var iframerpc = require('../../lib/iframerpc');
 
 exports = module.exports = function(checkOrigin, issueToken, listSessions) {
-  var actions = require('../../lib/actions');
-  
-  
-  var router = new actions.Router();
+  var router = new iframerpc.Router();
   router.action('checkOrigin', checkOrigin);
   router.action('issueToken', issueToken);
   router.action('listSessions', listSessions);
