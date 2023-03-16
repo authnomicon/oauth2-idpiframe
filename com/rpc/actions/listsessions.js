@@ -1,3 +1,5 @@
+var oauth2orize = require('oauth2orize');
+
 exports = module.exports = function(loginHint, clients, authenticator) {
   
   function validateClient(req, res, next) {
@@ -15,7 +17,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
       if (err) { return next(err); }
       
       if (!client) {
-        return res.status(401).json({ error: 'invalid_client', error_description: 'The OAuth client was not found.' });
+        return next(new oauth2orize.TokenError('The OAuth client was not found.', 'invalid_client'));
       }
       if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
         return res.status(403).json({ error: 'access_denied', error_description: 'Invalid client for this origin.' });

@@ -198,7 +198,7 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should respond to client using invalid origin
     
-    it('should respond to unknown client', function(done) {
+    it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       var clients = new Object();
@@ -223,14 +223,14 @@ describe('rpc/http/actions/listsessions', function() {
             sessionSelector: '0'
           }
         })
-        .finish(function() {
+        .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           expect(loginHint.generate.callCount).to.equal(0);
           
-          expect(this).to.have.status(401);
-          expect(this).to.have.body({
-            error: 'invalid_client',
-            error_description: 'The OAuth client was not found.'
-          });
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('The OAuth client was not found.');
+          expect(err.code).to.equal('invalid_client');
+          expect(err.status).to.equal(401);
           done();
         })
         .listen();
