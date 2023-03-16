@@ -17,8 +17,8 @@ describe('rpc/handlers/rpc', function() {
     
     it('should dispatch action', function(done) {
       var actions = new Object();
-      actions.dispatch = sinon.spy(function(action, req, res, next) {
-        expect(action).to.equal('checkOrigin');
+      actions.handle = sinon.spy(function(req, res, next) {
+        expect(req.query.action).to.equal('checkOrigin');
         res.json({ valid: true });
       });
     
