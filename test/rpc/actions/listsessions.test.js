@@ -238,6 +238,42 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should next with error when client has no registered origins
     
+    it('should next with error when read from client directory fails', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(new Error('something went wrong'));
+      
+      var handler = factory(loginHint, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.net',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .next(function(err) {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(loginHint.generate).to.not.be.called;
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('something went wrong');
+          done();
+        })
+        .listen();
+    }); // should next with error when read from client directory fails
+    
     it('should next with error when request is missing client_id parameter', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
