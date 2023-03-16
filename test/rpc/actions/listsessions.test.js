@@ -54,6 +54,7 @@ describe('rpc/http/actions/listsessions', function() {
           };
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           expect(loginHint.generate).to.not.be.called;
           
           expect(this).to.have.status(200);
@@ -144,6 +145,7 @@ describe('rpc/http/actions/listsessions', function() {
           }
         })
         .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           expect(loginHint.generate.callCount).to.equal(0);
           
           expect(this).to.have.status(403);
@@ -225,7 +227,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
-          expect(loginHint.generate.callCount).to.equal(0);
+          expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
           expect(err.message).to.equal('The OAuth client was not found.');
