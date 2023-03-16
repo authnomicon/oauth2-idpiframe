@@ -50,5 +50,4 @@ describe('rpc/rpc', function() {
     
   }); // router
   
-  
 });
