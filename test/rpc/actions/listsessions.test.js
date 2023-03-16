@@ -98,7 +98,10 @@ describe('rpc/http/actions/listsessions', function() {
         .finish(function() {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           expect(loginHint.generate).to.be.calledOnceWith(
-            '248289761001',
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe'
+            },
             {
               id: 's6BhdRkqt3',
               name: 'My Example Client',

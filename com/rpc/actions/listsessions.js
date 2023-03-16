@@ -63,7 +63,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
       // generated based on ss_domain parameter.  Investigate this.
       
       // TODO: load client details here
-      loginHint.generate(user.id, res.locals.client, function(err, hint) {
+      loginHint.generate(user, res.locals.client, function(err, hint) {
         if (err) { return iter(err); }
       
         var session = { login_hint: hint }
