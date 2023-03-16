@@ -1,11 +1,11 @@
 /* global describe, it */
 
 var expect = require('chai').expect;
-var factory = require('../../../com/rpc/actions/index');
-var actions = require('../../../lib/actions')
+var factory = require('../../com/rpc/router');
+var actions = require('../../lib/actions')
 
 
-describe('rpc/actions/index', function() {
+describe('rpc/router', function() {
   
   it('should be annotated', function() {
     expect(factory['@singleton']).to.be.undefined;

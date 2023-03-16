@@ -1,7 +1,7 @@
 var oauth2orize = require('oauth2orize');
 
 exports = module.exports = function(checkOrigin, issueToken, listSessions) {
-  var actions = require('../../../lib/actions');
+  var actions = require('../../lib/actions');
   
   
   var router = new actions.Router();
@@ -16,7 +16,7 @@ exports = module.exports = function(checkOrigin, issueToken, listSessions) {
 };
 
 exports['@require'] = [
-  './checkorigin',
-  './issuetoken',
-  './listsessions'
+  './actions/checkorigin',
+  './actions/issuetoken',
+  './actions/listsessions'
 ];

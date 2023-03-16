@@ -23,5 +23,5 @@ exports = module.exports = function(router) {
 };
 
 exports['@require'] = [
-  '../actions/index'
+  '../router'
 ];
