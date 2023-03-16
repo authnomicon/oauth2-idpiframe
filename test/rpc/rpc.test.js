@@ -45,8 +45,36 @@ describe('rpc/rpc', function() {
           expect(this).to.have.body({ valid: true });
           done();
         })
+        .next(done)
         .listen();
     }); // should dispatch checkOrigin action
+    
+    it('should respond with error when request is missing action parameter', function(done) {
+      var checkOrigin = sinon.spy();
+      var issueToken = sinon.spy();
+      var listSessions = sinon.spy();
+    
+      var router = factory(checkOrigin, issueToken, listSessions);
+    
+      chai.express.use(router.handle.bind(router))
+        .request(function(req, res) {
+          req.query = {};
+        })
+        .finish(function() {
+          expect(checkOrigin).to.not.have.been.called;
+          expect(issueToken).to.not.have.been.called;
+          expect(listSessions).to.not.have.been.calledOnce;
+          
+          expect(this).to.have.status(400);
+          expect(this).to.have.body({
+            error: 'invalid_request',
+            error_description: 'No action specified!'
+          });
+          done();
+        })
+        .next(done)
+        .listen();
+    }); // should respond with error when request is missing action parameter
     
   }); // router
   
