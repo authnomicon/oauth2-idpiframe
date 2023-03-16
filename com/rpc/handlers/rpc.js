@@ -4,7 +4,9 @@ exports = module.exports = function(router) {
   
   function dispatch(req, res, next) {
     var action = req.query.action;
-    // TODO: If no action, error
+    if (!action) {
+      return next(new oauth2orize.TokenError('No action specified!', 'invalid_request'));
+    }
     
     router.dispatch(action, req, res, next)
   }
