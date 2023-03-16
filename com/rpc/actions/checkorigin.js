@@ -7,8 +7,11 @@ exports = module.exports = function(clients) {
     var clientID = req.query.client_id;
     var origin = req.query.origin;
     
-    if (!clientID || !origin) {
-      return res.status(403).json({ error: 'invalid_request' });
+    if (!origin) {
+      return next(new oauth2orize.TokenError('Missing required parameter: origin', 'invalid_request'));
+    }
+    if (!clientID) {
+      return next(new oauth2orize.TokenError('Missing required parameter: client_id', 'invalid_request'));
     }
     
     clients.read(clientID, function(err, client) {

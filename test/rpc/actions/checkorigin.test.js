@@ -97,7 +97,7 @@ describe('rpc/actions/checkorigin', function() {
         .listen();
     }); // should respond when client has no registered origins
     
-    it('should respond to unknown client', function(done) {
+    it('should next with error when client is not found', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
@@ -108,7 +108,7 @@ describe('rpc/actions/checkorigin', function() {
           req.query = {
             action: 'checkOrigin',
             client_id: 's6BhdRkqt3',
-            origin: 'https://client.example.net'
+            origin: 'https://client.example.com'
           };
         })
         .next(function(err) {
@@ -121,34 +121,9 @@ describe('rpc/actions/checkorigin', function() {
           done();
         })
         .listen();
-    }); // should respond to unknown client
+    }); // should next with error when client is not found
     
-    it('should respond when missing client id parameter', function(done) {
-      var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
-      
-      var handler = factory(clients);
-    
-      chai.express.use(handler)
-        .request(function(req, res) {
-          req.query = {
-            action: 'checkOrigin',
-            origin: 'https://client.example.com'
-          };
-        })
-        .finish(function() {
-          expect(this).to.have.status(403);
-          expect(this).to.have.body({ error: 'invalid_request' });
-          done();
-        })
-        .listen();
-    }); // should respond when missing client id parameter
-    
-    it('should respond when missing origin parameter', function(done) {
+    it('should next with error when request is missing origin parameter', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -165,14 +140,47 @@ describe('rpc/actions/checkorigin', function() {
             client_id: 's6BhdRkqt3'
           };
         })
-        .finish(function() {
-          expect(this).to.have.status(403);
-          expect(this).to.have.body({ error: 'invalid_request' });
+        .next(function(err) {
+          expect(clients.read).to.not.be.called;
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('Missing required parameter: origin');
+          expect(err.code).to.equal('invalid_request');
+          expect(err.status).to.equal(400);
           done();
         })
         .listen();
-    }); // should respond when missing origin parameter
+    }); // should next with error when request is missing origin parameter
     
-  }); // action
+    it('should next with error when request is missing client_id parameter', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(clients);
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'checkOrigin',
+            origin: 'https://client.example.com'
+          };
+        })
+        .next(function(err) {
+          expect(clients.read).to.not.be.called;
+          
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.equal('Missing required parameter: client_id');
+          expect(err.code).to.equal('invalid_request');
+          expect(err.status).to.equal(400);
+          done();
+        })
+        .listen();
+    }); // should next with error when request is missing client_id parameter
+    
+  }); // handler
   
 });
