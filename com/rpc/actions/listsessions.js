@@ -39,14 +39,6 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
   }
   
   function list(req, res, next) {
-    console.log('LIST SESSIONS')
-    console.log(req.query);
-    console.log(req.user);
-    console.log(req.authInfo);
-    
-    // TODO: 404 with empty sessions if not authenticated?
-    
-    
     var users = req.user;
     if (!Array.isArray(users)) {
       users = [ users ];
@@ -55,7 +47,6 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
     if (!Array.isArray(infos)) {
       infos = [ infos ];
     }
-    
     
     var sessions = []
       , i = 0;
@@ -68,8 +59,8 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
           sessions: sessions
         });
       }
-      
       var info = infos[i - 1];
+      
       var session = {};
       
       if (info.sessionSelector) {
@@ -89,9 +80,7 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
         }
         
         var scope = grant.scopes.find(function(e) { return !e.resource; });
-      
-        // TODO: Test case for not adding login_hint if not authorized
-      
+        
         // NOTE: In Google's implementation, it appears that login_hint is being
         // generated based on ss_domain parameter.  Investigate this.
         loginHint.generate(user, res.locals.client, function(err, hint) {
@@ -117,13 +106,10 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
               session.photoUrl = photo;
             }
           }
-      
-          // TODO: Filter this list to only accounts the client has been granted access to
-      
+          
           sessions.push(session);
           iter();
         });
-      
       });
     })();
   }
