@@ -1,5 +1,15 @@
 var oauth2orize = require('oauth2orize');
 
+
+function primaryValue(values) {
+  if (!values || values.length == 0) { return undefined; }
+  
+  var value = values.find(function(e) { return e.primary; });
+  value = value || values[0];
+  return value.value;
+}
+
+
 exports = module.exports = function(loginHint, grants, clients, authenticator) {
   
   function validateClient(req, res, next) {
@@ -59,7 +69,16 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
         });
       }
       
+      var info = infos[i - 1];
+      var session = {};
       
+      if (info.sessionSelector) {
+        session.session_state = {
+          extraQueryParams: {
+            authuser: info.sessionSelector
+          }
+        };
+      }
       
       // https://openid.bitbucket.io/fapi/oauth-v2-grant-management.html
       grants.find(res.locals.client, user, function(err, grant) {
@@ -71,25 +90,27 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
       
         // NOTE: In Google's implementation, it appears that login_hint is being
         // generated based on ss_domain parameter.  Investigate this.
-      
-        // TODO: load client details here
         loginHint.generate(user, res.locals.client, function(err, hint) {
           if (err) { return iter(err); }
-      
-          var session = { login_hint: hint }
-          if (infos[i - 1].sessionSelector) {
-            session.session_state = {
-              extraQueryParams: {
-                authuser: infos[i - 1].sessionSelector
-              }
-            };
+          
+          session.login_hint = hint;
+          
+          var email, photo;
+          if (scope.scope.indexOf('email') != -1) {
+            email = primaryValue(user.emails);
+            if (email) {
+              session.email = email;
+            }
           }
-        
-        
           if (scope.scope.indexOf('profile') != -1) {
-            session.displayName = user.displayName;
+            photo = primaryValue(user.photos);
+            if (user.displayName) {
+              session.displayName = user.displayName;
+            }
+            if (photo) {
+              session.photoUrl = user.photo;
+            }
           }
-        
       
           // TODO: Filter this list to only accounts the client has been granted access to
       
