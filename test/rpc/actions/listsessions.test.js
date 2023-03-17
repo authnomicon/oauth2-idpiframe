@@ -23,7 +23,7 @@ describe('rpc/http/actions/listsessions', function() {
   it('should create handler', function() {
     var authenticateSpy = sinon.spy(authenticate);
     
-    var handler = factory(null, null, { authenticate: authenticateSpy });
+    var handler = factory(null, null, null, { authenticate: authenticateSpy });
     
     expect(authenticateSpy).to.be.calledOnce;
     expect(authenticateSpy).to.be.calledWithExactly([ 'session', 'anonymous' ], { multi: true });
@@ -33,7 +33,9 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should list no sessions', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -41,7 +43,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -69,6 +71,12 @@ describe('rpc/http/actions/listsessions', function() {
     it('should list single session', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null, {
+        scopes: [ {
+          scope: [ 'profile' ]
+        } ]
+      });
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -76,7 +84,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -112,7 +120,10 @@ describe('rpc/http/actions/listsessions', function() {
           expect(this).to.have.status(200);
           expect(this).to.have.body({
             sessions: [
-              { login_hint: 'AJMrCA...', session_state: { extraQueryParams: { authuser: '0' } } }
+              { login_hint: 'AJMrCA...',
+                displayName: 'Jane Doe',
+                session_state: { extraQueryParams: { authuser: '0' } }
+              }
             ]
           });
           done();
@@ -122,11 +133,13 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -160,7 +173,9 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should next with error when origin is invalid', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -168,7 +183,7 @@ describe('rpc/http/actions/listsessions', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -202,14 +217,16 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should next with error when client has no registered origins', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
         name: 'My Example Client'
       });
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -243,11 +260,13 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should next with error when read from client directory fails', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(new Error('something went wrong'));
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -279,15 +298,13 @@ describe('rpc/http/actions/listsessions', function() {
     
     it('should next with error when request is missing client_id parameter', function(done) {
       var loginHint = new Object();
-      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate = sinon.stub().yieldsAsync(null);
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
+      clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {
@@ -321,14 +338,12 @@ describe('rpc/http/actions/listsessions', function() {
     it('should next with error when request is missing origin parameter', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
       var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
+      clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(loginHint, clients, { authenticate: authenticate });
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
     
       chai.express.use(handler)
         .request(function(req, res) {

@@ -1,6 +1,6 @@
 var oauth2orize = require('oauth2orize');
 
-exports = module.exports = function(loginHint, clients, authenticator) {
+exports = module.exports = function(loginHint, grants, clients, authenticator) {
   
   function validateClient(req, res, next) {
     var clientID = req.query.client_id;
@@ -59,6 +59,16 @@ exports = module.exports = function(loginHint, clients, authenticator) {
         });
       }
       
+      
+      
+      // https://openid.bitbucket.io/fapi/oauth-v2-grant-management.html
+      grants.find(res.locals.client, user, function(err, grant) {
+        if (err) { return iter(err); }
+        
+        var scope = grant.scopes.find(function(e) { return !e.resource; });
+      
+        
+      
       // NOTE: In Google's implementation, it appears that login_hint is being
       // generated based on ss_domain parameter.  Investigate this.
       
@@ -74,11 +84,19 @@ exports = module.exports = function(loginHint, clients, authenticator) {
             }
           };
         }
+        
+        
+        if (scope.scope.indexOf('profile') != -1) {
+          session.displayName = user.displayName;
+        }
+        
       
         // TODO: Filter this list to only accounts the client has been granted access to
       
         sessions.push(session);
         iter();
+      });
+      
       });
     })();
   }
@@ -94,6 +112,7 @@ exports = module.exports = function(loginHint, clients, authenticator) {
 exports['@action'] = 'listSessions';
 exports['@require'] = [
   'module:@authnomicon/oauth2-idpiframe.LoginHintService',
+  'module:@authnomicon/oauth2.GrantService',
   'http://i.authnomicon.org/oauth2/ClientDirectory',
   'module:@authnomicon/session.Authenticator'
 ];
