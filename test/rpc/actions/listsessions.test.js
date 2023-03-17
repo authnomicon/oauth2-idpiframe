@@ -57,6 +57,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .finish(function() {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(this).to.have.status(200);
@@ -105,6 +106,17 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .finish(function() {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.be.calledOnceWith(
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            },
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe'
+            }
+          );
           expect(loginHint.generate).to.be.calledOnceWith(
             {
               id: '248289761001',
@@ -160,6 +172,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
@@ -204,6 +217,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
@@ -247,6 +261,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
@@ -287,6 +302,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
@@ -324,6 +340,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.not.be.called;
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
@@ -363,6 +380,7 @@ describe('rpc/http/actions/listsessions', function() {
         })
         .next(function(err) {
           expect(clients.read).to.not.be.called;
+          expect(grants.find).to.not.be.called;
           expect(loginHint.generate).to.not.be.called;
           
           expect(err).to.be.an.instanceOf(Error);
