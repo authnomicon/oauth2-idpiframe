@@ -67,35 +67,35 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
         
         var scope = grant.scopes.find(function(e) { return !e.resource; });
       
+        // TODO: Test case for not adding login_hint if not authorized
+      
+        // NOTE: In Google's implementation, it appears that login_hint is being
+        // generated based on ss_domain parameter.  Investigate this.
+      
+        // TODO: load client details here
+        loginHint.generate(user, res.locals.client, function(err, hint) {
+          if (err) { return iter(err); }
+      
+          var session = { login_hint: hint }
+          if (infos[i - 1].sessionSelector) {
+            session.session_state = {
+              extraQueryParams: {
+                authuser: infos[i - 1].sessionSelector
+              }
+            };
+          }
+        
+        
+          if (scope.scope.indexOf('profile') != -1) {
+            session.displayName = user.displayName;
+          }
         
       
-      // NOTE: In Google's implementation, it appears that login_hint is being
-      // generated based on ss_domain parameter.  Investigate this.
+          // TODO: Filter this list to only accounts the client has been granted access to
       
-      // TODO: load client details here
-      loginHint.generate(user, res.locals.client, function(err, hint) {
-        if (err) { return iter(err); }
-      
-        var session = { login_hint: hint }
-        if (infos[i - 1].sessionSelector) {
-          session.session_state = {
-            extraQueryParams: {
-              authuser: infos[i - 1].sessionSelector
-            }
-          };
-        }
-        
-        
-        if (scope.scope.indexOf('profile') != -1) {
-          session.displayName = user.displayName;
-        }
-        
-      
-        // TODO: Filter this list to only accounts the client has been granted access to
-      
-        sessions.push(session);
-        iter();
-      });
+          sessions.push(session);
+          iter();
+        });
       
       });
     })();
