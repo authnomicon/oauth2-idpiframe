@@ -284,6 +284,126 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should not include claims when not already approved
     
+    it('should list multiple sessions', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub();
+      loginHint.generate.onCall(0).yieldsAsync(null, 'AJMrCA...');
+      loginHint.generate.onCall(1).yieldsAsync(null, 'AJMrCB...');
+      var grants = new Object();
+      grants.find = sinon.stub();
+      grants.find.onCall(0).yieldsAsync(null, {
+        scopes: [ {
+          scope: [ 'email' ]
+        } ]
+      });
+      grants.find.onCall(1).yieldsAsync(null, {
+        scopes: [ {
+          scope: [ 'profile' ]
+        } ]
+      });
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = [ {
+            id: '248289761001',
+            displayName: 'Jane Doe',
+            emails: [ { value: 'janedoe@example.com' } ]
+          }, {
+            id: '703887',
+            displayName: 'Mork Hashimoto',
+            emails: [ { value: 'mhashimoto-04@plaxo.com' } ]
+          } ]
+          req.authInfo =  [ {
+            sessionSelector: '0'
+          }, {
+            sessionSelector: '1'
+          } ]
+        })
+        .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.be.calledTwice;
+          expect(grants.find.getCall(0)).to.be.calledWith(
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            },
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe',
+              emails: [ { value: 'janedoe@example.com' } ]
+            }
+          );
+          expect(grants.find.getCall(1)).to.be.calledWith(
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            },
+            {
+              id: '703887',
+              displayName: 'Mork Hashimoto',
+              emails: [ { value: 'mhashimoto-04@plaxo.com' } ]
+            }
+          );
+          expect(loginHint.generate.getCall(0)).to.be.calledWith(
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe',
+              emails: [ { value: 'janedoe@example.com' } ]
+            },
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            }
+          );
+          expect(loginHint.generate.getCall(1)).to.be.calledWith(
+            {
+              id: '703887',
+              displayName: 'Mork Hashimoto',
+              emails: [ { value: 'mhashimoto-04@plaxo.com' } ]
+            },
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            }
+          );
+          
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({
+            sessions: [
+              { login_hint: 'AJMrCA...',
+                email: 'janedoe@example.com',
+                session_state: { extraQueryParams: { authuser: '0' } }
+              },
+              { login_hint: 'AJMrCB...',
+                displayName: 'Mork Hashimoto',
+                session_state: { extraQueryParams: { authuser: '1' } }
+              }
+            ]
+          });
+          done();
+        })
+        .listen();
+    }); // should list multiple sessions
+    
     it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null);
