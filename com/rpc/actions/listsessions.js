@@ -108,7 +108,7 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
               session.displayName = user.displayName;
             }
             if (photo) {
-              session.photoUrl = user.photo;
+              session.photoUrl = photo;
             }
           }
       

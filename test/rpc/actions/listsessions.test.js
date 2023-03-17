@@ -69,7 +69,84 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should list no sessions
     
-    it('should list single session', function(done) {
+    it('should include email-related claims when already approved', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null, {
+        scopes: [ {
+          scope: [ 'email' ]
+        } ]
+      });
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe',
+            emails: [ { value: 'janedoe@example.com' } ]
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.be.calledOnceWith(
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            },
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe',
+              emails: [ { value: 'janedoe@example.com' } ]
+            }
+          );
+          expect(loginHint.generate).to.be.calledOnceWith(
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe',
+              emails: [ { value: 'janedoe@example.com' } ]
+            },
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            }
+          );
+          
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({
+            sessions: [
+              { login_hint: 'AJMrCA...',
+                email: 'janedoe@example.com',
+                session_state: { extraQueryParams: { authuser: '0' } }
+              }
+            ]
+          });
+          done();
+        })
+        .listen();
+    }); // should include email-related claims when already approved
+    
+    it('should include profile-related claims when already approved', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
       var grants = new Object();
@@ -98,7 +175,8 @@ describe('rpc/http/actions/listsessions', function() {
           };
           req.user = {
             id: '248289761001',
-            displayName: 'Jane Doe'
+            displayName: 'Jane Doe',
+            photos: [ { value: 'http://example.com/janedoe/me.jpg' } ]
           }
           req.authInfo =  {
             sessionSelector: '0'
@@ -114,13 +192,15 @@ describe('rpc/http/actions/listsessions', function() {
             },
             {
               id: '248289761001',
-              displayName: 'Jane Doe'
+              displayName: 'Jane Doe',
+              photos: [ { value: 'http://example.com/janedoe/me.jpg' } ]
             }
           );
           expect(loginHint.generate).to.be.calledOnceWith(
             {
               id: '248289761001',
-              displayName: 'Jane Doe'
+              displayName: 'Jane Doe',
+              photos: [ { value: 'http://example.com/janedoe/me.jpg' } ]
             },
             {
               id: 's6BhdRkqt3',
@@ -134,6 +214,7 @@ describe('rpc/http/actions/listsessions', function() {
             sessions: [
               { login_hint: 'AJMrCA...',
                 displayName: 'Jane Doe',
+                photoUrl: 'http://example.com/janedoe/me.jpg',
                 session_state: { extraQueryParams: { authuser: '0' } }
               }
             ]
@@ -141,7 +222,7 @@ describe('rpc/http/actions/listsessions', function() {
           done();
         })
         .listen();
-    }); // should list single session
+    }); // should include profile-related claims when already approved
     
     it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
