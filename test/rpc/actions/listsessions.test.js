@@ -224,6 +224,66 @@ describe('rpc/http/actions/listsessions', function() {
         .listen();
     }); // should include profile-related claims when already approved
     
+    it('should not include claims when not already approved', function(done) {
+      var loginHint = new Object();
+      loginHint.generate = sinon.stub().yieldsAsync(null, 'AJMrCA...');
+      var grants = new Object();
+      grants.find = sinon.stub().yieldsAsync(null);
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(loginHint, grants, clients, { authenticate: authenticate });
+    
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.query = {
+            action: 'listSessions',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe',
+            emails: [ { value: 'janedoe@example.com' } ]
+          }
+          req.authInfo =  {
+            sessionSelector: '0'
+          }
+        })
+        .finish(function() {
+          expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
+          expect(grants.find).to.be.calledOnceWith(
+            {
+              id: 's6BhdRkqt3',
+              name: 'My Example Client',
+              webOrigins: [ 'https://client.example.com' ]
+            },
+            {
+              id: '248289761001',
+              displayName: 'Jane Doe',
+              emails: [ { value: 'janedoe@example.com' } ]
+            }
+          );
+          expect(loginHint.generate).to.not.be.called;
+          
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({
+            sessions: [
+              { session_state: { extraQueryParams: { authuser: '0' } }
+              }
+            ]
+          });
+          done();
+        })
+        .listen();
+    }); // should not include claims when not already approved
+    
     it('should next with error when client is not found', function(done) {
       var loginHint = new Object();
       loginHint.generate = sinon.stub().yieldsAsync(null);

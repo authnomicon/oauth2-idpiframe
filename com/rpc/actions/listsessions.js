@@ -83,6 +83,10 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
       // https://openid.bitbucket.io/fapi/oauth-v2-grant-management.html
       grants.find(res.locals.client, user, function(err, grant) {
         if (err) { return iter(err); }
+        if (!grant) {
+          sessions.push(session);
+          return iter();
+        }
         
         var scope = grant.scopes.find(function(e) { return !e.resource; });
       
@@ -95,6 +99,8 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
           
           session.login_hint = hint;
           
+          // NOTE: Google does not seem to ever add `email`, `displayName` and `photoUrl`
+          // claims, regardless of scope approved.
           var email, photo;
           if (scope.scope.indexOf('email') != -1) {
             email = primaryValue(user.emails);
