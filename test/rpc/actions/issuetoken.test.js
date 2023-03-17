@@ -77,6 +77,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -125,6 +126,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -162,6 +164,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -200,6 +203,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -238,6 +242,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -275,6 +280,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',
@@ -312,6 +318,7 @@ describe('rpc/actions/issuetoken', function() {
       
       chai.express.use(handler)
         .request(function(req, res) {
+          req.connection = {};
           req.query = {
             action: 'issueToken',
             response_type: 'token id_token',

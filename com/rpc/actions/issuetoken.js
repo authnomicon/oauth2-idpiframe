@@ -12,7 +12,8 @@ exports = module.exports = function(evaluate, clients, server, authenticator, st
       console.log(req.query);
       next();
     },
-    //state({ external: true }), // FIXME: is store argument to component needed?
+    ////state({ external: true }), // FIXME: is store argument to component needed?
+    require('flowstate')({ external: true, store: store }), // TODO: can this be removed
     authenticator.authenticate([ 'session', 'anonymous' ], { multi: true }),
     server.authorization(
       function validateClient(clientID, redirectURI, cb) {
