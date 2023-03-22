@@ -79,6 +79,7 @@ exports = module.exports = function(loginHint, grants, clients, authenticator) {
           return iter();
         }
         
+        // TODO: error if grant.scopes does not exist
         var scope = grant.scopes.find(function(e) { return !e.resource; });
         
         // NOTE: In Google's implementation, it appears that login_hint is being

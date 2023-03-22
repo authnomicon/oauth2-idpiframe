@@ -2,7 +2,7 @@
 
 exports = module.exports = function(loginHint) {
   return require('oauth2orize-iframerpcrm')(function(txn, cb) {
-    loginHint.generate(txn.user.id, txn.client, function(err, hint) {
+    loginHint.generate(txn.user, txn.client, function(err, hint) {
       if (err) { return cb(err); }
       
       var params = {};
@@ -20,8 +20,8 @@ exports = module.exports = function(loginHint) {
   });
 };
 
-exports['@implements'] = 'http://i.authnomicon.org/oauth2/authorization/http/ResponseMode';
+exports['@implements'] = 'module:oauth2orize.Responder';
 exports['@mode'] = '.iframerpc';
 exports['@require'] = [
-  '../../../../../id/loginhint'
+  'module:@authnomicon/oauth2-idpiframe.LoginHintService'
 ];

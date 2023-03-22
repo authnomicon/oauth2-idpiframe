@@ -9,7 +9,7 @@ var factory = require('../../../../../../com/oauth2/authorize/http/response/mode
 describe('oauth2/authorize/http/response/modes/iframerpc', function() {
   
   it('should be annotated', function() {
-    expect(factory['@implements']).to.equal('http://i.authnomicon.org/oauth2/authorization/http/ResponseMode');
+    expect(factory['@implements']).to.equal('module:oauth2orize.Responder');
     expect(factory['@mode']).to.equal('.iframerpc');
     expect(factory['@singleton']).to.be.undefined;
   });
@@ -63,7 +63,10 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
         if (err) { return done(err); }
         
         expect(loginHint.generate.callCount).to.equal(1);
-        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+        expect(loginHint.generate.getCall(0).args[0]).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
         expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
           id: 's6BhdRkqt3',
           name: 'My Example Client',
@@ -107,7 +110,10 @@ describe('oauth2/authorize/http/response/modes/iframerpc', function() {
         if (err) { return done(err); }
         
         expect(loginHint.generate.callCount).to.equal(1);
-        expect(loginHint.generate.getCall(0).args[0]).to.equal('248289761001');
+        expect(loginHint.generate.getCall(0).args[0]).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
         expect(loginHint.generate.getCall(0).args[1]).to.deep.equal({
           id: 's6BhdRkqt3',
           name: 'My Example Client',
