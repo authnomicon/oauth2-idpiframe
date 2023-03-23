@@ -23,14 +23,14 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
     },
     authenticator.authenticate([ 'session', 'anonymous' ], { multi: true }),
     server.authorization(
-      function validateClient(clientID, redirectURI, cb) {
+      function validateClient(areq, cb) {
         console.log('IDP IFRAME VALIDATE CLIENT');
-        console.log(clientID);
-        console.log(redirectURI);
+        console.log(areq);
+        //console.log(redirectURI);
       
         // TODO: Implement this properly
       
-        clients.read(clientID, function(err, client) {
+        clients.read(areq.clientID, function(err, client) {
         //clients.read('1', function(err, client) {
           console.log('READ CLIENT');
           console.log(err);
@@ -39,6 +39,9 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
           if (err) { return cb(err); }
           if (!client) {
             return cb(new oauth2orize.TokenError('The OAuth client was not found.', 'invalid_client'));
+          }
+          if (!client.webOrigins || client.webOrigins.indexOf(areq.origin) == -1) {
+            return cb(new oauth2orize.TokenError('Invalid client for this origin.', 'access_denied', null, 403));
           }
         
           return cb(null, client);

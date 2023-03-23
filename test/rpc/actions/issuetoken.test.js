@@ -27,7 +27,12 @@ describe('rpc/actions/issuetoken', function() {
   var server = {
     authorization: function(validate, immediate) {
       return function(req, res, next) {
-        validate(req.query.client_id, req.query.redirect_uri, function(err, client, redirectURI, webOrigin) {
+        var areq = {
+          clientID: req.query.client_id,
+          origin: req.query.origin
+        }
+        
+        validate(areq, function(err, client, redirectURI, webOrigin) {
           if (err) { return next(err); }
           req.oauth2 = {
             client: client,
@@ -159,7 +164,7 @@ describe('rpc/actions/issuetoken', function() {
         .listen();
     }); // should next with error when client is not found
     
-    it.skip('should reject request from client with no registered origins', function(done) {
+    it('should reject request from client with no registered origins', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -186,7 +191,6 @@ describe('rpc/actions/issuetoken', function() {
           };
         })
         .next(function(err, req, res) {
-          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
           expect(err.message).to.equal('Invalid client for this origin.');
           expect(err.code).to.equal('access_denied');
           expect(err.status).to.equal(403);
@@ -197,7 +201,7 @@ describe('rpc/actions/issuetoken', function() {
         .listen();
     }); // should reject request from client with no registered origins
     
-    it.skip('should reject request from client using unregistered origin', function(done) {
+    it.only('should reject request from client using unregistered origin', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -225,7 +229,6 @@ describe('rpc/actions/issuetoken', function() {
           };
         })
         .next(function(err, req, res) {
-          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
           expect(err.message).to.equal('Invalid client for this origin.');
           expect(err.code).to.equal('access_denied');
           expect(err.status).to.equal(403);
