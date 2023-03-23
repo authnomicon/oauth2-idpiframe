@@ -1,4 +1,5 @@
-var aaa = require('triplea');
+var iframerpc = require('../../../lib/iframerpc')
+  , aaa = require('triplea');
 
 exports = module.exports = function(service, evaluate, clients, server, authenticator, store) {
   var oauth2orize = require('oauth2orize');
@@ -50,6 +51,23 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
       function(txn, cb) {
         console.log('IMMEDIATE MODE IFRAME!');
         console.log(txn);
+        
+        
+        /* Responses seen
+404
+{
+  "error" : "invalid_request",
+  "error_description" : "invalid login_hint."
+}
+        
+// this is the response from iframerpc in google    
+200 {"error":"IMMEDIATE_FAILED","detail":"Request could not be auto-approved."}
+// and translated to this on the client
+id: "T7OGGTMR"
+result {error: 'immediate_failed', detail: 'Request could not be auto-approved.', thrown_by: 'server'}
+rpcToken:  "cfjh_jzcXhhT7mLM"
+        */
+        
       
         var zreq = new aaa.Request(txn.client, txn.req, txn.user);
         service(zreq, function(err, zres) {
@@ -77,9 +95,9 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
             
             return cb(null, true, ares);
           } else {
-            console.log('TODO: error prompt not allowed');
+            // Matches Google's response
+            return cb(new iframerpc.IFrameRPCError('Request could not be auto-approved.', 'IMMEDIATE_FAILED', 200));
           }
-        
         });
       
       
@@ -88,22 +106,6 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
       }
     ),
     function(req, res, next) {
-      var origin = req.query.origin;
-      var loginHint = req.query.login_hint;
-      
-      // TODO: Put this validation back... maybe as a request plugin...
-      if (!origin) {
-        return next(new oauth2orize.AuthorizationError('Missing required parameter: origin', 'invalid_request'));
-      }
-      if (!loginHint) {
-        return next(new oauth2orize.AuthorizationError('Missing required parameter: login_hint', 'invalid_request'));
-      }
-      
-      var client = req.oauth2.client;
-      if (!client.webOrigins || client.webOrigins.indexOf(origin) == -1) {
-        return next(new oauth2orize.AuthorizationError('Invalid client for this origin.', 'access_denied'));
-      }
-      
       if (!req.user) {
         // matches Google's response, even though non-standard
         return res.status(200).json({ error: 'USER_LOGGED_OUT', detail: 'No active session found.' });
@@ -119,7 +121,10 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
       
       next();
     },
-    evaluate,
+    function(err, req, res, next) {
+      if (err.constructor.name !== 'IFrameRPCError') { return next(err); }
+      return res.status(err.status || 500).json({ error: err.code, detail: err.message });
+    }
     
     // TODO: Add error handling middleware here
     // TODO: Check that this is right and not reloading the txn
