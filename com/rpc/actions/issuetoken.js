@@ -38,7 +38,7 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
         
           if (err) { return cb(err); }
           if (!client) {
-            return cb(new oauth2orize.AuthorizationError('The OAuth client was not found.', 'invalid_client', undefined, 401));
+            return cb(new oauth2orize.TokenError('The OAuth client was not found.', 'invalid_client'));
           }
         
           return cb(null, client);
@@ -120,7 +120,7 @@ exports = module.exports = function(service, evaluate, clients, server, authenti
     
     // TODO: Add error handling middleware here
     // TODO: Check that this is right and not reloading the txn
-    server.authorizationError()
+    //server.authorizationError()
   ];
 };
 

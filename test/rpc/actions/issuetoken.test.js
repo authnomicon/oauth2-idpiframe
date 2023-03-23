@@ -125,7 +125,7 @@ describe('rpc/actions/issuetoken', function() {
         .listen();
     }); // should evaluate request
     
-    it.skip('should reject request from unregistered client', function(done) {
+    it('should next with error when client is not found', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
@@ -149,7 +149,6 @@ describe('rpc/actions/issuetoken', function() {
           };
         })
         .next(function(err, req, res) {
-          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
           expect(err.message).to.equal('The OAuth client was not found.');
           expect(err.code).to.equal('invalid_client');
           expect(err.status).to.equal(401);
@@ -158,7 +157,7 @@ describe('rpc/actions/issuetoken', function() {
           done();
         })
         .listen();
-    }); // should reject request from unregistered client
+    }); // should next with error when client is not found
     
     it.skip('should reject request from client with no registered origins', function(done) {
       var clients = new Object();
