@@ -201,7 +201,7 @@ describe('rpc/actions/issuetoken', function() {
         .listen();
     }); // should reject request from client with no registered origins
     
-    it.only('should reject request from client using unregistered origin', function(done) {
+    it('should reject request from client using unregistered origin', function(done) {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null, {
         id: 's6BhdRkqt3',
@@ -238,82 +238,6 @@ describe('rpc/actions/issuetoken', function() {
         })
         .listen();
     }); // should reject request from client using unregistered origin
-    
-    it.skip('should reject request when missing origin parameter', function(done) {
-      var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
-      
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
-      
-      chai.express.use(handler)
-        .request(function(req, res) {
-          req.connection = {};
-          req.query = {
-            action: 'issueToken',
-            response_type: 'token id_token',
-            client_id: 's6BhdRkqt3',
-            scope: 'profile email',
-            login_hint: 'AJMrCA...',
-            ss_domain: 'https://client.example.com'
-          };
-          req.user = {
-            id: '248289761001',
-            displayName: 'Jane Doe'
-          };
-        })
-        .next(function(err, req, res) {
-          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
-          expect(err.message).to.equal('Missing required parameter: origin');
-          expect(err.code).to.equal('invalid_request');
-          expect(err.status).to.equal(400);
-          
-          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
-          done();
-        })
-        .listen();
-    }); // should reject request when missing origin parameter
-    
-    it.skip('should reject request when missing login hint parameter', function(done) {
-      var clients = new Object();
-      clients.read = sinon.stub().yieldsAsync(null, {
-        id: 's6BhdRkqt3',
-        name: 'My Example Client',
-        webOrigins: [ 'https://client.example.com' ]
-      });
-      
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
-      
-      chai.express.use(handler)
-        .request(function(req, res) {
-          req.connection = {};
-          req.query = {
-            action: 'issueToken',
-            response_type: 'token id_token',
-            client_id: 's6BhdRkqt3',
-            origin: 'https://client.example.com',
-            scope: 'profile email',
-            ss_domain: 'https://client.example.com'
-          };
-          req.user = {
-            id: '248289761001',
-            displayName: 'Jane Doe'
-          }
-        })
-        .next(function(err, req, res) {
-          expect(err).to.be.an.instanceOf(oauth2orize.AuthorizationError);
-          expect(err.message).to.equal('Missing required parameter: login_hint');
-          expect(err.code).to.equal('invalid_request');
-          expect(err.status).to.equal(400);
-          
-          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
-          done();
-        })
-        .listen();
-    }); // should reject request when missing login hint parameter
     
     it.skip('should reject request when no active sessions', function(done) {
       var clients = new Object();
