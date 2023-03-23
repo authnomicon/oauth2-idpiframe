@@ -58,7 +58,9 @@ rpcToken:  "cfjh_jzcXhhT7mLM"
         */
         
       
-        var zreq = new aaa.Request(txn.client, txn.req, txn.user);
+        var zreq = new aaa.Request(txn.client);
+        zreq.user = txn.user;
+        
         service(zreq, function(err, zres) {
           if (err) { return cb(err); }
           
