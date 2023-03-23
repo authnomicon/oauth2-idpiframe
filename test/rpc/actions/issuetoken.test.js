@@ -277,4 +277,69 @@ describe('rpc/actions/issuetoken', function() {
     
   }); // handler
   
+  describe('with service that prompts', function() {
+    
+    var service = function(req, cb) {
+      return cb(null, req.prompt('consent'));
+    }
+    
+    it('should respond with error', function(done) {
+      var clients = new Object();
+      clients.read = sinon.stub().yieldsAsync(null, {
+        id: 's6BhdRkqt3',
+        name: 'My Example Client',
+        webOrigins: [ 'https://client.example.com' ]
+      });
+      
+      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      
+      chai.express.use(handler)
+        .request(function(req, res) {
+          req.connection = {};
+          req.query = {
+            action: 'issueToken',
+            response_type: 'token id_token',
+            client_id: 's6BhdRkqt3',
+            origin: 'https://client.example.com',
+            scope: 'profile email',
+            login_hint: 'AJMrCA...',
+            ss_domain: 'https://client.example.com'
+          };
+          req.user = {
+            id: '248289761001',
+            displayName: 'Jane Doe'
+          };
+        })
+        .finish(function() {
+          console.log('XXX');
+          console.log(this.req.oauth2)
+          
+          expect(clients.read).to.have.been.calledOnceWith('s6BhdRkqt3');
+          expect(this.req.oauth2.client).to.deep.equal({
+            id: 's6BhdRkqt3',
+            name: 'My Example Client',
+            webOrigins: [ 'https://client.example.com' ]
+          });
+          expect(this.req.oauth2.redirectURI).to.be.undefined;
+          expect(this.req.oauth2.webOrigin).to.be.undefined;
+          /*
+          expect(this.req.oauth2.res).to.deep.equal({
+            allow: true,
+            issuer: 'http://localhost:8085',
+            scope: [ 'openid', 'profile', 'email' ]
+          });
+          */
+          
+          expect(this).to.have.status(200);
+          expect(this).to.have.body({
+            error: 'IMMEDIATE_FAILED',
+            detail: 'Request could not be auto-approved.'
+          });
+          done()
+        })
+        .listen();
+    }); // should respond with error
+    
+  });
+  
 });
