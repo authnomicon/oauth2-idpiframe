@@ -20,6 +20,7 @@ describe('rpc/actions/issuetoken', function() {
     return cb(null, req.permit([ 'openid', 'profile', 'email' ]));
   }
   
+  // TODO: remove this
   function evaluate(req, res, next) {
     res.json({ access_token: '2YotnFZFEjr1zCsicMWpAA', token_type: 'example' });
   };
@@ -83,7 +84,7 @@ describe('rpc/actions/issuetoken', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {
@@ -134,7 +135,7 @@ describe('rpc/actions/issuetoken', function() {
       var clients = new Object();
       clients.read = sinon.stub().yieldsAsync(null);
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {
@@ -171,7 +172,7 @@ describe('rpc/actions/issuetoken', function() {
         name: 'My Example Client'
       });
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {
@@ -209,7 +210,7 @@ describe('rpc/actions/issuetoken', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {
@@ -247,7 +248,7 @@ describe('rpc/actions/issuetoken', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {
@@ -291,7 +292,7 @@ describe('rpc/actions/issuetoken', function() {
         webOrigins: [ 'https://client.example.com' ]
       });
       
-      var handler = factory(service, evaluate, clients, server, { authenticate: authenticate }, state);
+      var handler = factory(service, clients, server, { authenticate: authenticate }, state);
       
       chai.express.use(handler)
         .request(function(req, res) {

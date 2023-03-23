@@ -1,7 +1,7 @@
 var iframerpc = require('../../../lib/iframerpc')
   , aaa = require('aaatrio');
 
-exports = module.exports = function(service, evaluate, clients, server, authenticator, store) {
+exports = module.exports = function(service, clients, server, authenticator, store) {
   var oauth2orize = require('oauth2orize');
   
   // TODO: Evaluate is going to need to process login hint and/or id token to select appropriate user
@@ -99,7 +99,6 @@ rpcToken:  "cfjh_jzcXhhT7mLM"
 exports['@action'] = 'issueToken';
 exports['@require'] = [
   'http://i.authnomicon.org/oauth2/AuthorizationService',
-  'org.authnomicon/oauth2/authorize/http/middleware/evaluate',
   'http://i.authnomicon.org/oauth2/ClientDirectory',
   'org.authnomicon/oauth2/http/server',
   'module:@authnomicon/session.Authenticator',
