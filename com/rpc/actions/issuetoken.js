@@ -1,5 +1,5 @@
 var iframerpc = require('../../../lib/iframerpc')
-  , aaa = require('triplea');
+  , aaa = require('aaatrio');
 
 exports = module.exports = function(service, evaluate, clients, server, authenticator, store) {
   var oauth2orize = require('oauth2orize');
