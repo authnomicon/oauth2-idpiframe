@@ -25,13 +25,16 @@ exports = module.exports = function(clients) {
         // or
         // {"valid":false,"blocked":false,"suppressed":false}
         // blocked seems to indicate the client doesn't have this feature
+        
+        // TODO: is it possible to be valid true and blocked true?  Test Google's impl
+        // YES: {"valid":true,"blocked":true,"suppressed":false}
         return res.json({ valid: false, blocked: false });
       }
       
       // NOTE: Google responds with `blocked` and `supressed`, although it is unclear
       // what those parameters do.
       // {valid: true, blocked: false, suppressed: false}
-      return res.json({ valid: true });
+      return res.json({ valid: true, blocked: false });
     });
   }
   

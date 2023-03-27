@@ -36,7 +36,7 @@ describe('rpc/actions/checkorigin', function() {
           expect(clients.read).to.be.calledOnceWith('s6BhdRkqt3');
           
           expect(this).to.have.status(200);
-          expect(this).to.have.body({ valid: true });
+          expect(this).to.have.body({ valid: true, blocked: false });
           done();
         })
         .listen();
