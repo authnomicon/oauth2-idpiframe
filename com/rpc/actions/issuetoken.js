@@ -9,6 +9,9 @@ exports = module.exports = function(service, clients, server, authenticator, sto
   
   // WIP: look at jarm response mode
   
+  // TODO: Validate this request for required parameters (just login_hint? client_id?  maybe all done by authz
+  // parsers, except for authentication)
+  
   return [
     function(req, res, next) {
       // Inspired by https://expressjs.com/en/4x/api.html#req.xhr
@@ -56,6 +59,8 @@ rpcToken:  "cfjh_jzcXhhT7mLM"
         return res.status(200).json({ error: 'USER_LOGGED_OUT', detail: 'No active session found.' });
       }
         */
+        
+        // TODO: pass a login hint that isn't the authenticated user here and see what the response is
         
       
         var zreq = new aaa.Request(txn.client);
